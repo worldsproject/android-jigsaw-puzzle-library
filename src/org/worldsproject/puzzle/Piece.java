@@ -4,11 +4,6 @@ import android.graphics.Bitmap;
 
 public class Piece
 {
-	public enum Type
-	{
-		CORNER, EDGE, FULL; 
-	}
-	
 	private int x = 0;
 	private int y = 0;
 	
