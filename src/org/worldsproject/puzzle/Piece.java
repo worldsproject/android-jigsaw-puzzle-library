@@ -15,7 +15,12 @@ public class Piece
 	 */
 	private int orientation = 0;
 	
-	public Piece(Bitmap image)
+	public Piece(Bitmap image, Bitmap mask)
+	{
+		applyMask();
+	}
+	
+	private void applyMask()
 	{
 		
 	}
