@@ -4,9 +4,9 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello" />
+    <org.worldsproject.type_puzzle.PuzzleView
+        android:id="@+id/puzzleView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
