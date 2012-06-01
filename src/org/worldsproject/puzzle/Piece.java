@@ -1,11 +1,19 @@
 package org.worldsproject.puzzle;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 public class Piece
 {
 	private int x = 0;
 	private int y = 0;
+	
+	private Piece top = null;
+	private Piece right = null;
+	private Piece bottom = null;
+	private Piece left = null;
+	
+	private Bitmap image;
 	
 	/*
 	 * 0 is the correct orientation.
@@ -17,7 +25,7 @@ public class Piece
 	
 	public Piece(Bitmap image)
 	{
-		
+		this.image = image;
 	}
 	
 	public void turn()
@@ -28,6 +36,11 @@ public class Piece
 		{
 			orientation = 0;
 		}
+	}
+	
+	public void draw(Canvas c)
+	{
+		c.drawBitmap(image, x, y, null);
 	}
 
 	public int getX()
@@ -48,5 +61,45 @@ public class Piece
 	public void setY(int y)
 	{
 		this.y = y;
+	}
+
+	public Piece getTop()
+	{
+		return top;
+	}
+
+	public void setTop(Piece top)
+	{
+		this.top = top;
+	}
+
+	public Piece getRight()
+	{
+		return right;
+	}
+
+	public void setRight(Piece right)
+	{
+		this.right = right;
+	}
+
+	public Piece getBottom()
+	{
+		return bottom;
+	}
+
+	public void setBottom(Piece bottom)
+	{
+		this.bottom = bottom;
+	}
+
+	public Piece getLeft()
+	{
+		return left;
+	}
+
+	public void setLeft(Piece left)
+	{
+		this.left = left;
 	}
 }
