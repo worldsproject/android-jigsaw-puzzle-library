@@ -1,25 +1,30 @@
 package org.worldsproject.puzzle;
 
-import org.worldsproject.puzzle.R;
+import org.worldsproject.type_puzzle.PuzzleActivity;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-public class PuzzleView extends View
+public class PuzzleView extends View implements OnGestureListener,
+OnDoubleTapListener
 {
+	private static final String DEBUG = "PuzzleView";
 	private Resources r;
 	private Puzzle puzzle;
+	private GestureDetector gesture;
+	
 	
 	public PuzzleView(Context context)
 	{
@@ -51,6 +56,8 @@ public class PuzzleView extends View
 
 	private void loadPuzzle()
 	{
+		gesture = new GestureDetector(this.getContext(), this);
+		
 		Bitmap[] monsters = 
 			{
 				BitmapFactory.decodeResource(r, R.drawable.monster1),
@@ -80,5 +87,121 @@ public class PuzzleView extends View
 	public void onDraw(Canvas canvas)
 	{
 		puzzle.draw(canvas);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) 
+	{  
+	    return gesture.onTouchEvent(event);  
+	} 
+
+	@Override
+	public boolean onDoubleTap(MotionEvent arg0)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public boolean onDoubleTapEvent(MotionEvent e)
+	{
+		Log.v(DEBUG, "Double Click");
+		return false;
+	}
+
+
+
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public boolean onDown(MotionEvent arg0)
+	{
+		for(Piece p: this.puzzle.getPieces())
+		{
+			if(p.inMe((int)arg0.getX(), (int)arg0.getY()))
+			{
+				Log.v(DEBUG, "Down a piece");
+				break;
+			}
+		}
+		return true;
+	}
+
+
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public void onLongPress(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY)
+	{
+		//Get the piece that is under this tap.
+		Piece tapped = null;
+		
+		for(Piece p: this.puzzle.getPieces())
+		{
+			if(p.inMe((int)e1.getX(), (int)e1.getY()))
+			{
+				Log.v(DEBUG, "In a piece");
+				tapped = p;
+				break;
+			}
+		}
+		Log.v(DEBUG, "Tapped is " + tapped);
+		if(tapped == null) //We aren't hitting a piece
+		{
+			return false;
+		}
+		else
+		{
+			tapped.setX(tapped.getX() + (int)distanceX);
+			tapped.setY(tapped.getY() + (int)distanceY);
+			Log.v(DEBUG, "Moving a piece");
+		}
+		return true;
+	}
+
+
+
+	@Override
+	public void onShowPress(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

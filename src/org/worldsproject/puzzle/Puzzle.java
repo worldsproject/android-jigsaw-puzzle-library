@@ -1,5 +1,6 @@
 package org.worldsproject.puzzle;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ public class Puzzle
 	private static final Random RAN = new Random();
 	
 	private Piece[][] puzzle;
+	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private int display_width;
 	private int display_height;
 	private int piece_width;
@@ -32,6 +34,7 @@ public class Puzzle
 			for(int j = 0; j < puzzle[i].length; j++)
 			{
 				puzzle[i][j] = new Piece(images[loc]);
+				pieces.add(puzzle[i][j]);
 				loc++;
 			}
 		}
@@ -63,5 +66,10 @@ public class Puzzle
 				puzzle[i][j].draw(c);
 			}
 		}
+	}
+	
+	public ArrayList<Piece> getPieces()
+	{
+		return this.pieces;
 	}
 }

@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <org.worldsproject.type_puzzle.PuzzleView
+    <org.worldsproject.puzzle.PuzzleView
         android:id="@+id/puzzleView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

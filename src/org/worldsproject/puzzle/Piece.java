@@ -114,4 +114,13 @@ public class Piece
 	{
 		return this.group != null;
 	}
+	
+	public boolean inMe(int x, int y)
+	{
+		if(x >= this.x && x <= (this.x + this.image.getWidth()) 
+				&& y >= this.y && y <= (this.y + this.image.getHeight()))
+			return true;
+		
+		return false;
+	}
 }
