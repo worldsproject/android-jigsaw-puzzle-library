@@ -1,6 +1,5 @@
-package org.worldsproject.type_puzzle;
+package org.worldsproject.puzzle;
 
-import org.worldsproject.puzzle.Puzzle;
 import org.worldsproject.puzzle.R;
 
 import android.content.Context;
