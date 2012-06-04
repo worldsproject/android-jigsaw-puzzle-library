@@ -13,6 +13,8 @@ public class Piece
 	private Piece bottom = null;
 	private Piece left = null;
 	
+	private PuzzleGroup group;
+	
 	private Bitmap image;
 	
 	/*
@@ -101,5 +103,15 @@ public class Piece
 	public void setLeft(Piece left)
 	{
 		this.left = left;
+	}
+	
+	public void addToGroup(PuzzleGroup pg)
+	{
+		this.group = pg;
+	}
+	
+	public boolean isInGroup()
+	{
+		return this.group != null;
 	}
 }
