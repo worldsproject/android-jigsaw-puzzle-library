@@ -2,6 +2,7 @@ package org.worldsproject.puzzle;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 
 public class Piece
 {
@@ -33,6 +34,9 @@ public class Piece
 	public void turn()
 	{
 		orientation++;
+		Matrix m = new Matrix();
+		m.setRotate(90, image.getWidth()/2, image.getHeight()/2);
+		image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), m, true);
 		
 		if(orientation >= 4)
 		{

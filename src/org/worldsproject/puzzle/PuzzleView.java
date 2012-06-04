@@ -108,7 +108,15 @@ OnDoubleTapListener
 	public boolean onDoubleTapEvent(MotionEvent e)
 	{
 		Log.v(DEBUG, "Double Click");
-		return false;
+		
+		for(Piece p: this.puzzle.getPieces())
+		{
+			if(p.inMe((int)e.getX(), (int)e.getY()))
+					p.turn();
+			this.invalidate();
+			break;
+		}
+		return true;
 	}
 
 
