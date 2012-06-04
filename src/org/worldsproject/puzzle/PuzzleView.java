@@ -61,17 +61,17 @@ OnDoubleTapListener
 		Bitmap[] monsters = 
 			{
 				BitmapFactory.decodeResource(r, R.drawable.monster1),
-				BitmapFactory.decodeResource(r, R.drawable.monster2),
-				BitmapFactory.decodeResource(r, R.drawable.monster3),
-				BitmapFactory.decodeResource(r, R.drawable.monster4),
-				BitmapFactory.decodeResource(r, R.drawable.monster5),
-				BitmapFactory.decodeResource(r, R.drawable.monster6),
-				BitmapFactory.decodeResource(r, R.drawable.monster7),
-				BitmapFactory.decodeResource(r, R.drawable.monster8),
-				BitmapFactory.decodeResource(r, R.drawable.monster9),
-				BitmapFactory.decodeResource(r, R.drawable.monster10),
-				BitmapFactory.decodeResource(r, R.drawable.monster11),
-				BitmapFactory.decodeResource(r, R.drawable.monster12),
+//				BitmapFactory.decodeResource(r, R.drawable.monster2),
+//				BitmapFactory.decodeResource(r, R.drawable.monster3),
+//				BitmapFactory.decodeResource(r, R.drawable.monster4),
+//				BitmapFactory.decodeResource(r, R.drawable.monster5),
+//				BitmapFactory.decodeResource(r, R.drawable.monster6),
+//				BitmapFactory.decodeResource(r, R.drawable.monster7),
+//				BitmapFactory.decodeResource(r, R.drawable.monster8),
+//				BitmapFactory.decodeResource(r, R.drawable.monster9),
+//				BitmapFactory.decodeResource(r, R.drawable.monster10),
+//				BitmapFactory.decodeResource(r, R.drawable.monster11),
+//				BitmapFactory.decodeResource(r, R.drawable.monster12),
 			};
 		
 		WindowManager wm = (WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE);
@@ -80,7 +80,7 @@ OnDoubleTapListener
 		int width = display.getWidth();
 		int height = display.getHeight();
 		
-		puzzle = new Puzzle(monsters, 4, 3, width, height);
+		puzzle = new Puzzle(monsters, 1, 1, width, height);
 	}
 
 	@Override
@@ -173,16 +173,17 @@ OnDoubleTapListener
 				break;
 			}
 		}
-		Log.v(DEBUG, "Tapped is " + tapped);
+
 		if(tapped == null) //We aren't hitting a piece
 		{
 			return false;
 		}
 		else
 		{
-			tapped.setX(tapped.getX() + (int)distanceX);
-			tapped.setY(tapped.getY() + (int)distanceY);
+			tapped.setX(tapped.getX() - (int)distanceX);
+			tapped.setY(tapped.getY() - (int)distanceY);
 			Log.v(DEBUG, "Moving a piece");
+			this.invalidate();
 		}
 		return true;
 	}
