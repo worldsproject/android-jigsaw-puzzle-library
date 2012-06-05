@@ -133,14 +133,6 @@ OnDoubleTapListener
 	@Override
 	public boolean onDown(MotionEvent arg0)
 	{
-		for(Piece p: this.puzzle.getPieces())
-		{
-			if(p.inMe((int)arg0.getX(), (int)arg0.getY()))
-			{
-				Log.v(DEBUG, "Down a piece");
-				break;
-			}
-		}
 		return true;
 	}
 
