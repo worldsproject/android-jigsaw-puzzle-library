@@ -3,6 +3,7 @@ package org.worldsproject.puzzle;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.util.Log;
 
 public class Piece
 {
@@ -16,7 +17,10 @@ public class Piece
 	
 	private PuzzleGroup group;
 	
+//	private Ma
 	private Bitmap image;
+	
+	private static final String DEBUG = "PuzzlePiece";
 	
 	/*
 	 * 0 is the correct orientation.
@@ -174,6 +178,11 @@ public class Piece
 		return this.group;
 	}
 	
+	public void setGroup(PuzzleGroup g)
+	{
+		this.group = g;
+	}
+	
 	public boolean inMe(int x, int y)
 	{
 		if(x >= this.x && x <= (this.x + this.image.getWidth()) 
@@ -190,17 +199,21 @@ public class Piece
 			this.group = new PuzzleGroup();
 			this.group.addPiece(this);
 			this.group.addPiece(p);
+			Log.v(DEBUG, "Neither in a group");
 		}
 		else if(this.isInGroup() && p.isInGroup())
 		{
 			this.group.addGroup(p.getGroup());
+			Log.v(DEBUG, "Both me in a group");
 		}
 		else if(this.isInGroup())
 		{
+			Log.v(DEBUG, "Only him in a group");
 			this.group.addPiece(p);
 		}
 		else
 		{
+			Log.v(DEBUG, "Him in a group");
 			p.getGroup().addPiece(this);
 		}
 		
@@ -208,24 +221,28 @@ public class Piece
 		{
 			this.setX(p.getX());
 			this.setY(p.getY() + p.getHeight());
+			Log.v(DEBUG, "Snap to top.");
 		}
 		
 		if(p == this.right)
 		{
 			this.setX(p.getX() - this.getWidth());
 			this.setY(p.getY());
+			Log.v(DEBUG, "Snap to right.");
 		}
 		
 		if(p == this.bottom)
 		{
 			this.setX(p.getX());
 			this.setY(p.getY() - this.getHeight());
+			Log.v(DEBUG, "Snap to bottom.");
 		}
 		
 		if(p == this.left)
 		{
 			this.setX(p.getX() + p.getWidth());
 			this.setY(p.getY());
+			Log.v(DEBUG, "Snap to left.");
 		}
 	}
 }

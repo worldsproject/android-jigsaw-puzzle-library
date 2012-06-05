@@ -29,39 +29,39 @@ public class Puzzle
 		
 		int loc = 0;
 		
-		for(int i = 0; i < puzzle.length; i++)
+		for(int y = 0; y < puzzle[0].length; y++)
 		{
-			for(int j = 0; j < puzzle[i].length; j++)
+			for(int x = 0; x < puzzle.length; x++)
 			{
-				puzzle[i][j] = new Piece(images[loc]);
-				pieces.add(puzzle[i][j]);
+				puzzle[x][y] = new Piece(images[loc]);
+				pieces.add(puzzle[x][y]);
 				loc++;
 			}
 		}
 		
-		for(int i = 0; i < puzzle.length; i++)
+		for(int x = 0; x < puzzle.length; x++)
 		{
-			for(int j = 0; j < puzzle[i].length; j++)
+			for(int y = 0; y < puzzle[x].length; y++)
 			{
 				//Top
-				if(j-1 >= 0)
+				if(y-1 >= 0)
 				{
-					puzzle[i][j].setTop(puzzle[i][j-1]);
+					puzzle[x][y].setTop(puzzle[x][y-1]);
 				}
 				//Right
-				if(i+1 < puzzle.length)
+				if(x+1 < width)
 				{
-					puzzle[i][j].setRight(puzzle[i+1][j-1]);
+					puzzle[x][y].setRight(puzzle[x+1][y]);
 				}
 				//Bottom
-				if(j+1 < puzzle[i].length)
+				if(y+1 < height)
 				{
-					puzzle[i][j].setBottom(puzzle[i][j+1]);
+					puzzle[x][y].setBottom(puzzle[x][y+1]);
 				}
 				//Left
-				if(i-1 >= 0)
+				if(x-1 >= 0)
 				{
-					puzzle[i-1][j].setLeft(puzzle[i-1][j]);
+					puzzle[x-1][y].setLeft(puzzle[x-1][y]);
 				}
 			}
 		}

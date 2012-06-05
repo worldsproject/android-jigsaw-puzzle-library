@@ -80,7 +80,7 @@ OnDoubleTapListener
 		int width = display.getWidth();
 		int height = display.getHeight();
 		
-		puzzle = new Puzzle(monsters, 1, 2, width, height);
+		puzzle = new Puzzle(monsters, 2, 1, width, height);
 	}
 
 	@Override
@@ -106,8 +106,6 @@ OnDoubleTapListener
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e)
 	{
-		Log.v(DEBUG, "Double Click");
-		
 		for(Piece p: this.puzzle.getPieces())
 		{
 			if(p.inMe((int)e.getX(), (int)e.getY()))
@@ -167,7 +165,6 @@ OnDoubleTapListener
 		{
 			if(p.inMe((int)e1.getX(), (int)e1.getY()))
 			{
-				Log.v(DEBUG, "In a piece");
 				tapped = p;
 				break;
 			}
@@ -181,34 +178,39 @@ OnDoubleTapListener
 		{
 			if(tapped.isInGroup())
 			{
-				tapped.getGroup().translate(-(int)distanceX, -(int)distanceY);
+				Log.v(DEBUG, "Move the whole group.");
+				tapped.getGroup().translate((int)distanceX, (int)distanceY);
 			}
 			else
 			{
 				tapped.setX(tapped.getX() - (int)distanceX);
 				tapped.setY(tapped.getY() - (int)distanceY);
-				Log.v(DEBUG, "Moving a piece");
 				
 				if(tapped.inLeft())
 				{
+					Log.v(DEBUG, "Snap Left");
 					tapped.snap(tapped.getLeft());
 				}
 				
 				if(tapped.inRight())
 				{
+					Log.v(DEBUG, "Snap Right");
 					tapped.snap(tapped.getRight());
 				}
 				
 				if(tapped.inBottom())
 				{
+					Log.v(DEBUG, "Snap Bottom");
 					tapped.snap(tapped.getBottom());
 				}
 				
 				if(tapped.inTop())
 				{
+					Log.v(DEBUG, "Snap Top");
 					tapped.snap(tapped.getTop());
 				}
 			}
+			
 			this.invalidate();
 		}
 		return true;
