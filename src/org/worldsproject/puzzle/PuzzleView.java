@@ -61,7 +61,7 @@ OnDoubleTapListener
 		Bitmap[] monsters = 
 			{
 				BitmapFactory.decodeResource(r, R.drawable.monster1),
-//				BitmapFactory.decodeResource(r, R.drawable.monster2),
+				BitmapFactory.decodeResource(r, R.drawable.monster2),
 //				BitmapFactory.decodeResource(r, R.drawable.monster3),
 //				BitmapFactory.decodeResource(r, R.drawable.monster4),
 //				BitmapFactory.decodeResource(r, R.drawable.monster5),
@@ -80,7 +80,7 @@ OnDoubleTapListener
 		int width = display.getWidth();
 		int height = display.getHeight();
 		
-		puzzle = new Puzzle(monsters, 1, 1, width, height);
+		puzzle = new Puzzle(monsters, 1, 2, width, height);
 	}
 
 	@Override
@@ -101,7 +101,6 @@ OnDoubleTapListener
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 
 	@Override
@@ -180,9 +179,36 @@ OnDoubleTapListener
 		}
 		else
 		{
-			tapped.setX(tapped.getX() - (int)distanceX);
-			tapped.setY(tapped.getY() - (int)distanceY);
-			Log.v(DEBUG, "Moving a piece");
+			if(tapped.isInGroup())
+			{
+				tapped.getGroup().translate(-(int)distanceX, -(int)distanceY);
+			}
+			else
+			{
+				tapped.setX(tapped.getX() - (int)distanceX);
+				tapped.setY(tapped.getY() - (int)distanceY);
+				Log.v(DEBUG, "Moving a piece");
+				
+				if(tapped.inLeft())
+				{
+					tapped.snap(tapped.getLeft());
+				}
+				
+				if(tapped.inRight())
+				{
+					tapped.snap(tapped.getRight());
+				}
+				
+				if(tapped.inBottom())
+				{
+					tapped.snap(tapped.getBottom());
+				}
+				
+				if(tapped.inTop())
+				{
+					tapped.snap(tapped.getTop());
+				}
+			}
 			this.invalidate();
 		}
 		return true;

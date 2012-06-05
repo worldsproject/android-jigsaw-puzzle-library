@@ -68,6 +68,16 @@ public class Piece
 	{
 		this.y = y;
 	}
+	
+	public int getHeight()
+	{
+		return this.image.getHeight();
+	}
+	
+	public int getWidth()
+	{
+		return this.image.getWidth();
+	}
 
 	public Piece getTop()
 	{
@@ -109,6 +119,46 @@ public class Piece
 		this.left = left;
 	}
 	
+	public boolean inTop() //TODO just the relevant corners.
+	{
+		if(top == null)
+			return false;
+		
+		return inSomething(this.top);
+	}
+	
+	public boolean inRight()
+	{
+		if(right == null)
+			return false;
+		
+		return inSomething(this.right);
+	}
+	
+	public boolean inBottom()
+	{
+		if(bottom == null)
+			return false;
+		
+		return inSomething(this.bottom);
+	}
+	
+	public boolean inLeft()
+	{
+		if(left == null)
+			return false;
+		
+		return inSomething(this.left);
+	}
+	
+	private boolean inSomething(Piece p)
+	{
+		return p.inMe(this.x, this.x) ||
+				p.inMe(this.x + this.image.getWidth(), y) ||
+				p.inMe(this.x, this.image.getHeight() + y) ||
+				p.inMe(this.x + this.image.getWidth(), this.y + this.image.getHeight());
+	}
+	
 	public void addToGroup(PuzzleGroup pg)
 	{
 		this.group = pg;
@@ -119,6 +169,11 @@ public class Piece
 		return this.group != null;
 	}
 	
+	public PuzzleGroup getGroup()
+	{
+		return this.group;
+	}
+	
 	public boolean inMe(int x, int y)
 	{
 		if(x >= this.x && x <= (this.x + this.image.getWidth()) 
@@ -126,5 +181,51 @@ public class Piece
 			return true;
 		
 		return false;
+	}
+	
+	public void snap(Piece p)
+	{
+		if(this.isInGroup() == false && p.isInGroup() == false)
+		{
+			this.group = new PuzzleGroup();
+			this.group.addPiece(this);
+			this.group.addPiece(p);
+		}
+		else if(this.isInGroup() && p.isInGroup())
+		{
+			this.group.addGroup(p.getGroup());
+		}
+		else if(this.isInGroup())
+		{
+			this.group.addPiece(p);
+		}
+		else
+		{
+			p.getGroup().addPiece(this);
+		}
+		
+		if(p == this.top)
+		{
+			this.setX(p.getX());
+			this.setY(p.getY() + p.getHeight());
+		}
+		
+		if(p == this.right)
+		{
+			this.setX(p.getX() - this.getWidth());
+			this.setY(p.getY());
+		}
+		
+		if(p == this.bottom)
+		{
+			this.setX(p.getX());
+			this.setY(p.getY() - this.getHeight());
+		}
+		
+		if(p == this.left)
+		{
+			this.setX(p.getX() + p.getWidth());
+			this.setY(p.getY());
+		}
 	}
 }

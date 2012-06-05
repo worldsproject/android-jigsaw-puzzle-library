@@ -39,6 +39,33 @@ public class Puzzle
 			}
 		}
 		
+		for(int i = 0; i < puzzle.length; i++)
+		{
+			for(int j = 0; j < puzzle[i].length; j++)
+			{
+				//Top
+				if(j-1 >= 0)
+				{
+					puzzle[i][j].setTop(puzzle[i][j-1]);
+				}
+				//Right
+				if(i+1 < puzzle.length)
+				{
+					puzzle[i][j].setRight(puzzle[i+1][j-1]);
+				}
+				//Bottom
+				if(j+1 < puzzle[i].length)
+				{
+					puzzle[i][j].setBottom(puzzle[i][j+1]);
+				}
+				//Left
+				if(i-1 >= 0)
+				{
+					puzzle[i-1][j].setLeft(puzzle[i-1][j]);
+				}
+			}
+		}
+		
 		shuffle();
 	}
 	
