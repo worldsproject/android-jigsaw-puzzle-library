@@ -11,14 +11,15 @@ public class PuzzleGroup
 	public void addPiece(Piece piece)
 	{
 		group.add(piece);
+		piece.setGroup(this);
 	}
 	
 	public void translate(int x, int y)
 	{
 		for(Piece p : group)
 		{
-			p.setX(p.getX()+x);
-			p.setY(p.getY()+y);
+			p.setX(p.getX()-x);
+			p.setY(p.getY()-y);
 		}
 	}
 	
