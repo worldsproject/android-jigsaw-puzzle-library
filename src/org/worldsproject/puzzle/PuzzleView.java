@@ -80,7 +80,7 @@ OnDoubleTapListener
 		int width = display.getWidth();
 		int height = display.getHeight();
 		
-		puzzle = new Puzzle(monsters, 2, 1, width, height);
+		puzzle = new Puzzle(monsters, 2, width, height);
 	}
 
 	@Override
@@ -106,10 +106,14 @@ OnDoubleTapListener
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e)
 	{
+		
 		for(Piece p: this.puzzle.getPieces())
 		{
 			if(p.inMe((int)e.getX(), (int)e.getY()))
-					p.turn();
+			{
+				Log.v(DEBUG, "Turn");
+				p.turn();
+			}
 			this.invalidate();
 			break;
 		}
@@ -178,7 +182,6 @@ OnDoubleTapListener
 		{
 			if(tapped.isInGroup())
 			{
-				Log.v(DEBUG, "Move the whole group.");
 				tapped.getGroup().translate((int)distanceX, (int)distanceY);
 			}
 			else

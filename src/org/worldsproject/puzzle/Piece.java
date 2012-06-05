@@ -17,7 +17,6 @@ public class Piece
 	
 	private PuzzleGroup group;
 	
-//	private Ma
 	private Bitmap image;
 	
 	private static final String DEBUG = "PuzzlePiece";
