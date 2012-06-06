@@ -14,7 +14,6 @@ public class PuzzleGroup
 	{
 		group.add(piece);
 		piece.setGroup(this);
-		Log.v("PuzzleGroup", "Size: " + group.size());
 	}
 	
 	public void translate(int x, int y)
@@ -26,12 +25,17 @@ public class PuzzleGroup
 		}
 	}
 	
-	public void addGroup(PuzzleGroup group)
+	public void addGroup(PuzzleGroup oldGroup)
 	{
-		for(Piece p : group.group)
+		for(Piece p : oldGroup.getGroup())
 		{
-			this.group.add(p);
+			this.addPiece(p);
 		}
+	}
+	
+	public HashSet<Piece> getGroup()
+	{
+		return group;
 	}
 	
 	public boolean sameGroup(Piece a, Piece b)

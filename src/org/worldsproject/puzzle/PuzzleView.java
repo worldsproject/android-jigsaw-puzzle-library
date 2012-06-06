@@ -65,7 +65,8 @@ public class PuzzleView extends View implements OnGestureListener,
 				BitmapFactory.decodeResource(r, R.drawable.monster9),
 				BitmapFactory.decodeResource(r, R.drawable.monster10),
 				BitmapFactory.decodeResource(r, R.drawable.monster11),
-				BitmapFactory.decodeResource(r, R.drawable.monster12), };
+				BitmapFactory.decodeResource(r, R.drawable.monster12), 
+				};
 
 		WindowManager wm = (WindowManager) this.getContext().getSystemService(
 				Context.WINDOW_SERVICE);
@@ -74,7 +75,7 @@ public class PuzzleView extends View implements OnGestureListener,
 		int width = display.getWidth();
 		int height = display.getHeight();
 
-		puzzle = new Puzzle(monsters, 4, width, height);
+		puzzle = new Puzzle(monsters, 2, width, height);
 	}
 
 	@Override

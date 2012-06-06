@@ -193,48 +193,34 @@ public class Piece
 			return;
 		}
 
-		this.group.addPiece(p);
-
 		if (p == this.top)
 		{
-			Log.v(DEBUG, "Snap to top.");
-			Log.v(DEBUG, "Pieces current xy: (" + x + ", " + y + ")");
-			Log.v(DEBUG, "Others xy: (" + p.getX() + ", " + p.getY() + ")");
-
-			this.setX(p.getX());
-			this.setY(p.getY() + p.getHeight());
-
-			Log.v(DEBUG, "New piece xy: (" + x + ", " + y + ")");
+			int mx = x - p.getX();
+			int my = y - (p.getY() + p.getHeight());
+			group.translate(mx, my);
 		}
 
 		if (p == this.right)
 		{
-			Log.v(DEBUG, "Snap to right.");
-			Log.v(DEBUG, "Pieces current xy: (" + x + ", " + y + ")");
-			Log.v(DEBUG, "Others xy: (" + p.getX() + ", " + p.getY() + ")");
-			this.setX(p.getX() - this.getWidth());
-			this.setY(p.getY());
-			Log.v(DEBUG, "New piece xy: (" + x + ", " + y + ")");
+			int mx = x - (p.getX() - this.getWidth());
+			int my = y - p.getY();
+			group.translate(mx, my);
 		}
 
 		if (p == this.bottom)
 		{
-			Log.v(DEBUG, "Snap to bottom.");
-			Log.v(DEBUG, "Pieces current xy: (" + x + ", " + y + ")");
-			Log.v(DEBUG, "Others xy: (" + p.getX() + ", " + p.getY() + ")");
-			this.setX(p.getX());
-			this.setY(p.getY() - this.getHeight());
-			Log.v(DEBUG, "New piece xy: (" + x + ", " + y + ")");
+			int mx = x - p.getX();
+			int my = y - (p.getY() - this.getHeight());
+			group.translate(mx, my);
 		}
 
 		if (p == this.left)
 		{
-			Log.v(DEBUG, "Snap to left.");
-			Log.v(DEBUG, "Pieces current xy: (" + x + ", " + y + ")");
-			Log.v(DEBUG, "Others xy: (" + p.getX() + ", " + p.getY() + ")");
-			this.setX(p.getX() + p.getWidth());
-			this.setY(p.getY());
-			Log.v(DEBUG, "New piece xy: (" + x + ", " + y + ")");
+			int mx = x - (p.getX() + p.getWidth());
+			int my = y - p.getY();
+			group.translate(mx, my);
 		}
+		
+		this.group.addGroup(p.getGroup());
 	}
 }
