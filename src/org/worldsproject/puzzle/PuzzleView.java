@@ -116,8 +116,10 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		if(checkSurroundings(tapped))
+			this.invalidate();
+		
+		return true;
 	}
 
 	@Override
@@ -130,9 +132,9 @@ public class PuzzleView extends View implements OnGestureListener,
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY)
 	{
-		checkSurroundings(tapped);
-
-		this.invalidate();
+		if(checkSurroundings(tapped))
+			this.invalidate();
+		
 		return true;
 	}
 
@@ -184,32 +186,40 @@ public class PuzzleView extends View implements OnGestureListener,
 		return true;
 	}
 
-	private void checkSurroundings(Piece tapped)
+	private boolean checkSurroundings(Piece tapped)
 	{
 		if(tapped.getOrientation() != 0)
 		{
-			return;
+			return false;
 		}
+		
+		boolean rv = false;
 		
 		if (tapped.inLeft())
 		{
 			tapped.snap(tapped.getLeft());
+			rv = true;
 		}
 
 		if (tapped.inRight())
 		{
 			tapped.snap(tapped.getRight());
+			rv = true;
 		}
 
 		if (tapped.inBottom())
 		{
 			tapped.snap(tapped.getBottom());
+			rv = true;
 		}
 
 		if (tapped.inTop())
 		{
 			tapped.snap(tapped.getTop());
+			rv = true;
 		}
+		
+		return rv;
 	}
 
 	@Override
@@ -221,9 +231,9 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public boolean onSingleTapUp(MotionEvent e)
 	{
-		checkSurroundings(tapped);
-
-		this.invalidate();
+		if(checkSurroundings(tapped))
+			this.invalidate();
+		
 		return true;
 	}
 }
