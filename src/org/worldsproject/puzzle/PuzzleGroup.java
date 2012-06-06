@@ -33,4 +33,9 @@ public class PuzzleGroup
 			this.group.add(p);
 		}
 	}
+	
+	public boolean sameGroup(Piece a, Piece b)
+	{
+		return group.contains(a) && group.contains(b);
+	}
 }

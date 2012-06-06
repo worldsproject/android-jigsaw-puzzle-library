@@ -18,69 +18,63 @@ import android.view.View;
 import android.view.WindowManager;
 
 public class PuzzleView extends View implements OnGestureListener,
-OnDoubleTapListener
+		OnDoubleTapListener
 {
 	private static final String DEBUG = "PuzzleView";
 	private Resources r;
 	private Puzzle puzzle;
 	private GestureDetector gesture;
-	
-	
+
 	public PuzzleView(Context context)
 	{
 		super(context);
 		r = context.getResources();
-		
+
 		loadPuzzle();
 	}
-	
-	
 
 	public PuzzleView(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
 		r = context.getResources();
-		
+
 		loadPuzzle();
 	}
-
-
 
 	public PuzzleView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 		r = context.getResources();
-		
+
 		loadPuzzle();
 	}
 
 	private void loadPuzzle()
 	{
 		gesture = new GestureDetector(this.getContext(), this);
-		
-		Bitmap[] monsters = 
-			{
+
+		Bitmap[] monsters = {
 				BitmapFactory.decodeResource(r, R.drawable.monster1),
 				BitmapFactory.decodeResource(r, R.drawable.monster2),
-//				BitmapFactory.decodeResource(r, R.drawable.monster3),
-//				BitmapFactory.decodeResource(r, R.drawable.monster4),
-//				BitmapFactory.decodeResource(r, R.drawable.monster5),
-//				BitmapFactory.decodeResource(r, R.drawable.monster6),
-//				BitmapFactory.decodeResource(r, R.drawable.monster7),
-//				BitmapFactory.decodeResource(r, R.drawable.monster8),
-//				BitmapFactory.decodeResource(r, R.drawable.monster9),
-//				BitmapFactory.decodeResource(r, R.drawable.monster10),
-//				BitmapFactory.decodeResource(r, R.drawable.monster11),
-//				BitmapFactory.decodeResource(r, R.drawable.monster12),
-			};
-		
-		WindowManager wm = (WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE);
+				BitmapFactory.decodeResource(r, R.drawable.monster3),
+				BitmapFactory.decodeResource(r, R.drawable.monster4),
+				BitmapFactory.decodeResource(r, R.drawable.monster5),
+				BitmapFactory.decodeResource(r, R.drawable.monster6),
+				BitmapFactory.decodeResource(r, R.drawable.monster7),
+				BitmapFactory.decodeResource(r, R.drawable.monster8),
+				BitmapFactory.decodeResource(r, R.drawable.monster9),
+				BitmapFactory.decodeResource(r, R.drawable.monster10),
+				BitmapFactory.decodeResource(r, R.drawable.monster11),
+				BitmapFactory.decodeResource(r, R.drawable.monster12), };
+
+		WindowManager wm = (WindowManager) this.getContext().getSystemService(
+				Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 
 		int width = display.getWidth();
 		int height = display.getHeight();
-		
-		puzzle = new Puzzle(monsters, 2, width, height);
+
+		puzzle = new Puzzle(monsters, 4, width, height);
 	}
 
 	@Override
@@ -90,10 +84,10 @@ OnDoubleTapListener
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) 
-	{  
-	    return gesture.onTouchEvent(event);  
-	} 
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		return gesture.onTouchEvent(event);
+	}
 
 	@Override
 	public boolean onDoubleTap(MotionEvent arg0)
@@ -102,14 +96,13 @@ OnDoubleTapListener
 		return false;
 	}
 
-
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e)
 	{
-		
-		for(Piece p: this.puzzle.getPieces())
+
+		for (Piece p : this.puzzle.getPieces())
 		{
-			if(p.inMe((int)e.getX(), (int)e.getY()))
+			if (p.inMe((int) e.getX(), (int) e.getY()))
 			{
 				Log.v(DEBUG, "Turn");
 				p.turn();
@@ -120,8 +113,6 @@ OnDoubleTapListener
 		return true;
 	}
 
-
-
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e)
 	{
@@ -129,15 +120,11 @@ OnDoubleTapListener
 		return false;
 	}
 
-
-
 	@Override
 	public boolean onDown(MotionEvent arg0)
 	{
 		return true;
 	}
-
-
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
@@ -147,88 +134,76 @@ OnDoubleTapListener
 		return false;
 	}
 
-
-
 	@Override
 	public void onLongPress(MotionEvent e)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY)
 	{
-		//Get the piece that is under this tap.
+		// Get the piece that is under this tap.
 		Piece tapped = null;
-		
-		for(Piece p: this.puzzle.getPieces())
+
+		for (Piece p : this.puzzle.getPieces())
 		{
-			if(p.inMe((int)e1.getX(), (int)e1.getY()))
+			if (p.inMe((int) e1.getX(), (int) e1.getY()))
 			{
 				tapped = p;
 				break;
 			}
 		}
 
-		if(tapped == null) //We aren't hitting a piece
+		if (tapped == null) // We aren't hitting a piece
 		{
 			return false;
 		}
 		else
 		{
-			if(tapped.isInGroup())
-			{
-				tapped.getGroup().translate((int)distanceX, (int)distanceY);
-			}
-			else
-			{
-				tapped.setX(tapped.getX() - (int)distanceX);
-				tapped.setY(tapped.getY() - (int)distanceY);
-				
-				if(tapped.inLeft())
-				{
-					Log.v(DEBUG, "Snap Left");
-					tapped.snap(tapped.getLeft());
-				}
-				
-				if(tapped.inRight())
-				{
-					Log.v(DEBUG, "Snap Right");
-					tapped.snap(tapped.getRight());
-				}
-				
-				if(tapped.inBottom())
-				{
-					Log.v(DEBUG, "Snap Bottom");
-					tapped.snap(tapped.getBottom());
-				}
-				
-				if(tapped.inTop())
-				{
-					Log.v(DEBUG, "Snap Top");
-					tapped.snap(tapped.getTop());
-				}
-			}
-			
+			tapped.getGroup().translate((int) distanceX, (int) distanceY);
+			checkSurroundings(tapped);
+
 			this.invalidate();
 		}
 		return true;
 	}
 
+	private void checkSurroundings(Piece tapped)
+	{
+		if (tapped.inLeft())
+		{
+			Log.v(DEBUG, "Snap Left");
+			tapped.snap(tapped.getLeft());
+		}
 
+		if (tapped.inRight())
+		{
+			Log.v(DEBUG, "Snap Right");
+			tapped.snap(tapped.getRight());
+		}
+
+		if (tapped.inBottom())
+		{
+			Log.v(DEBUG, "Snap Bottom");
+			tapped.snap(tapped.getBottom());
+		}
+
+		if (tapped.inTop())
+		{
+			Log.v(DEBUG, "Snap Top");
+			tapped.snap(tapped.getTop());
+		}
+	}
 
 	@Override
 	public void onShowPress(MotionEvent e)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e)
