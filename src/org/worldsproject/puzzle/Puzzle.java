@@ -39,7 +39,7 @@ public class Puzzle
 				pieces.get(i).setTop(pieces.get(i - width));
 			}
 			// Right
-			if(i+1 < pieces.size())
+			if(i+1 < pieces.size() && (i+1)%width != 0)
 			{
 				pieces.get(i).setRight(pieces.get(i + 1));
 			}
@@ -49,7 +49,7 @@ public class Puzzle
 				pieces.get(i).setBottom(pieces.get(i + width));
 			}
 			// Left
-			if(i - 1 >= 0)
+			if(i - 1 >= 0 && i%width != 0)
 			{
 				pieces.get(i).setLeft(pieces.get(i - 1));
 			}

@@ -124,8 +124,13 @@ public class Piece
 	{
 		this.left = left;
 	}
+	
+	public int getOrientation()
+	{
+		return this.orientation;
+	}
 
-	public boolean inTop() // TODO just the relevant corners.
+	public boolean inTop()
 	{
 		if (top == null)
 			return false;

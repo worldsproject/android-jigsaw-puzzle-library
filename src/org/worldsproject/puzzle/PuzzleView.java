@@ -75,7 +75,7 @@ public class PuzzleView extends View implements OnGestureListener,
 		int width = display.getWidth();
 		int height = display.getHeight();
 
-		puzzle = new Puzzle(monsters, 2, width, height);
+		puzzle = new Puzzle(monsters, 4, width, height);
 	}
 
 	@Override
@@ -174,27 +174,28 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	private void checkSurroundings(Piece tapped)
 	{
+		if(tapped.getOrientation() != 0)
+		{
+			return;
+		}
+		
 		if (tapped.inLeft())
 		{
-			Log.v(DEBUG, "Snap Left");
 			tapped.snap(tapped.getLeft());
 		}
 
 		if (tapped.inRight())
 		{
-			Log.v(DEBUG, "Snap Right");
 			tapped.snap(tapped.getRight());
 		}
 
 		if (tapped.inBottom())
 		{
-			Log.v(DEBUG, "Snap Bottom");
 			tapped.snap(tapped.getBottom());
 		}
 
 		if (tapped.inTop())
 		{
-			Log.v(DEBUG, "Snap Top");
 			tapped.snap(tapped.getTop());
 		}
 	}
