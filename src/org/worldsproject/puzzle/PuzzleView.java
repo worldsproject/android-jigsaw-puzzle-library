@@ -1,7 +1,5 @@
 package org.worldsproject.puzzle;
 
-import org.worldsproject.type_puzzle.PuzzleActivity;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -24,6 +22,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	private Resources r;
 	private Puzzle puzzle;
 	private GestureDetector gesture;
+	private Piece tapped;
 
 	public PuzzleView(Context context)
 	{
@@ -147,15 +146,27 @@ public class PuzzleView extends View implements OnGestureListener,
 			float distanceY)
 	{
 		// Get the piece that is under this tap.
-		Piece tapped = null;
-
+		Piece possibleNewTapped = null;
+		
 		for (Piece p : this.puzzle.getPieces())
 		{
 			if (p.inMe((int) e1.getX(), (int) e1.getY()))
 			{
-				tapped = p;
-				break;
+				if(p == tapped)
+				{
+					possibleNewTapped = null;
+					break;
+				}
+				else
+				{
+					possibleNewTapped = p;
+				}
 			}
+		}
+		
+		if(possibleNewTapped != null)
+		{
+			tapped = possibleNewTapped;
 		}
 
 		if (tapped == null) // We aren't hitting a piece
