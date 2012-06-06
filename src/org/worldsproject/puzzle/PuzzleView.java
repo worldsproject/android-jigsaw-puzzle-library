@@ -130,14 +130,16 @@ public class PuzzleView extends View implements OnGestureListener,
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		checkSurroundings(tapped);
+
+		this.invalidate();
+		return true;
 	}
 
 	@Override
 	public void onLongPress(MotionEvent e)
 	{
-		// TODO Auto-generated method stub
+		Log.v(DEBUG, "Long Press recorded");
 
 	}
 
@@ -148,7 +150,7 @@ public class PuzzleView extends View implements OnGestureListener,
 		// Get the piece that is under this tap.
 		Piece possibleNewTapped = null;
 		
-		for (Piece p : this.puzzle.getPieces())
+		for (Piece p : this.puzzle.getPieces()) 
 		{
 			if (p.inMe((int) e1.getX(), (int) e1.getY()))
 			{
@@ -176,7 +178,6 @@ public class PuzzleView extends View implements OnGestureListener,
 		else
 		{
 			tapped.getGroup().translate((int) distanceX, (int) distanceY);
-			checkSurroundings(tapped);
 
 			this.invalidate();
 		}
@@ -214,14 +215,15 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public void onShowPress(MotionEvent e)
 	{
-		// TODO Auto-generated method stub
-
+		Log.v(DEBUG, "Show Press recorded");
 	}
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		checkSurroundings(tapped);
+
+		this.invalidate();
+		return true;
 	}
 }
