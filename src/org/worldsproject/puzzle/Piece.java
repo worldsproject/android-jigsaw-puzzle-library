@@ -3,7 +3,6 @@ package org.worldsproject.puzzle;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.util.Log;
 
 public class Piece
 {
