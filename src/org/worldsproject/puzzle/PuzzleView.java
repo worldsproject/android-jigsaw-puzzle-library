@@ -64,8 +64,7 @@ public class PuzzleView extends View implements OnGestureListener,
 				BitmapFactory.decodeResource(r, R.drawable.monster9),
 				BitmapFactory.decodeResource(r, R.drawable.monster10),
 				BitmapFactory.decodeResource(r, R.drawable.monster11),
-				BitmapFactory.decodeResource(r, R.drawable.monster12), 
-				};
+				BitmapFactory.decodeResource(r, R.drawable.monster12), };
 
 		puzzle = new Puzzle(monsters, 4);
 	}
@@ -73,8 +72,8 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-		
-		if(firstDraw)
+
+		if (firstDraw)
 		{
 			firstDraw = false;
 			puzzle.shuffle(this.getWidth(), this.getHeight());
@@ -114,15 +113,39 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e)
 	{
-		if(checkSurroundings(tapped))
+		if (checkSurroundings(tapped))
 			this.invalidate();
-		
+
 		return true;
 	}
 
 	@Override
-	public boolean onDown(MotionEvent arg0)
+	public boolean onDown(MotionEvent e1)
 	{
+		// Get the piece that is under this tap.
+		Piece possibleNewTapped = null;
+
+		for (Piece p : this.puzzle.getPieces())
+		{
+			if (p.inMe((int) e1.getX(), (int) e1.getY()))
+			{
+				if (p == tapped)
+				{
+					possibleNewTapped = null;
+					break;
+				}
+				else
+				{
+					possibleNewTapped = p;
+				}
+			}
+		}
+
+		if (possibleNewTapped != null)
+		{
+			tapped = possibleNewTapped;
+		}
+
 		return true;
 	}
 
@@ -130,9 +153,9 @@ public class PuzzleView extends View implements OnGestureListener,
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY)
 	{
-		if(checkSurroundings(tapped))
+		if (checkSurroundings(tapped))
 			this.invalidate();
-		
+
 		return true;
 	}
 
@@ -147,36 +170,12 @@ public class PuzzleView extends View implements OnGestureListener,
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY)
 	{
-		// Get the piece that is under this tap.
-		Piece possibleNewTapped = null;
-		
-		for (Piece p : this.puzzle.getPieces()) 
-		{
-			if (p.inMe((int) e1.getX(), (int) e1.getY()))
-			{
-				if(p == tapped)
-				{
-					possibleNewTapped = null;
-					break;
-				}
-				else
-				{
-					possibleNewTapped = p;
-				}
-			}
-		}
-		
-		if(possibleNewTapped != null)
-		{
-			tapped = possibleNewTapped;
-		}
-
 		if (tapped == null) // We aren't hitting a piece
 		{
-			for(Piece p : this.puzzle.getPieces())
+			for (Piece p : this.puzzle.getPieces())
 			{
-				p.setX((int)-distanceX);
-				p.setY((int)-distanceY);
+				p.setX((int) -distanceX);
+				p.setY((int) -distanceY);
 			}
 		}
 		else
@@ -190,13 +189,13 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	private boolean checkSurroundings(Piece tapped)
 	{
-		if(tapped == null || tapped.getOrientation() != 0)
+		if (tapped == null || tapped.getOrientation() != 0)
 		{
 			return false;
 		}
-		
-		boolean rv = false; 
-		
+
+		boolean rv = false;
+
 		if (tapped.inLeft())
 		{
 			tapped.snap(tapped.getLeft());
@@ -220,7 +219,7 @@ public class PuzzleView extends View implements OnGestureListener,
 			tapped.snap(tapped.getTop());
 			rv = true;
 		}
-		
+
 		return rv;
 	}
 
@@ -233,18 +232,18 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public boolean onSingleTapUp(MotionEvent e)
 	{
-		if(checkSurroundings(tapped))
+		if (checkSurroundings(tapped))
 			this.invalidate();
-		
+
 		return true;
 	}
-	
+
 	public void zoomIn()
 	{
 		this.puzzle.zoomIn();
 		this.invalidate();
 	}
-	
+
 	public void zoomOut()
 	{
 		this.puzzle.zoomOut();

@@ -59,7 +59,7 @@ public class Piece
 		zoomScale += 0.1;
 		zoomEffect();
 	}
-	
+	 
 	public void zoomOut() 
 	{
 		if(zoomScale <= 0.1)
@@ -185,7 +185,7 @@ public class Piece
 		if (bottom == null)
 			return false;
 
-		return bottom.inMe(this.x + this.display.getWidth(), y)
+		return bottom.inMe(this.x + this.display.getWidth(), y + this.display.getHeight())
 				|| bottom.inMe(this.x, this.display.getHeight() + y);
 	}
 
@@ -194,9 +194,8 @@ public class Piece
 		if (left == null)
 			return false;
 
-		return left.inMe(this.x, this.display.getHeight() + y)
-				|| left.inMe(this.x + this.display.getWidth(), this.y
-						+ this.display.getHeight());
+		return left.inMe(this.x, this.y)
+				|| left.inMe(this.x, this.y + this.display.getHeight());
 	}
 
 	public void addToGroup(PuzzleGroup pg)
