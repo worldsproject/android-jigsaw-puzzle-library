@@ -24,7 +24,7 @@ public class Puzzle
 		{
 			pieces.add(new Piece(images[i]));
 		}
-
+ 
 		for (int i = 0; i < pieces.size(); i++)
 		{
 			// Top

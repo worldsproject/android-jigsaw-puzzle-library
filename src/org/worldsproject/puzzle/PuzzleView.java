@@ -92,8 +92,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public boolean onDoubleTap(MotionEvent arg0)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -188,12 +187,12 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	private boolean checkSurroundings(Piece tapped)
 	{
-		if(tapped.getOrientation() != 0)
+		if(tapped == null || tapped.getOrientation() != 0)
 		{
 			return false;
 		}
 		
-		boolean rv = false;
+		boolean rv = false; 
 		
 		if (tapped.inLeft())
 		{
