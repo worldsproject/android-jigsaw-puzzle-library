@@ -37,6 +37,9 @@ public class PuzzleGenerator
 
 	private int getScaling(int totalWidth, int requiredSpaces)
 	{
+		int idealWidth = totalWidth/requiredSpaces;
+		
+		
 		return 0;
 	}
 
@@ -211,7 +214,6 @@ public class PuzzleGenerator
 				int y = points[i][j].y - masks[i][j].getTopLeft().y;
 				
 				Bitmap temp = Bitmap.createBitmap(image, x, y, masks[i][j].getWidth(), masks[i][j].getHeight());
-//				Can
 				rv.add(temp);
 			}
 		}

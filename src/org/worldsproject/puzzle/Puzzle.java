@@ -12,17 +12,11 @@ public class Puzzle
 	private static final Random RAN = new Random();
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
-	private int display_width;
-	private int display_height;
 	private int piece_width;
 	private int piece_height;
 
-	public Puzzle(Bitmap[] images, int width, int display_width,
-			int display_height)
+	public Puzzle(Bitmap[] images, int width)
 	{
-		this.display_height = display_height;
-		this.display_width = display_width;
-
 		piece_width = images[0].getWidth();
 		piece_height = images[0].getHeight();
 
@@ -54,11 +48,9 @@ public class Puzzle
 				pieces.get(i).setLeft(pieces.get(i - 1));
 			}
 		} 
-
-		shuffle();
 	}
 
-	public void shuffle()
+	public void shuffle(int display_width, int display_height)
 	{
 		int maxX = display_width - piece_width;
 		int maxY = display_height - piece_height;

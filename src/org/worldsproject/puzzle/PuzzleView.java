@@ -23,6 +23,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	private Puzzle puzzle;
 	private GestureDetector gesture;
 	private Piece tapped;
+	private boolean firstDraw = true;
 
 	public PuzzleView(Context context)
 	{
@@ -67,19 +68,18 @@ public class PuzzleView extends View implements OnGestureListener,
 				BitmapFactory.decodeResource(r, R.drawable.monster12), 
 				};
 
-		WindowManager wm = (WindowManager) this.getContext().getSystemService(
-				Context.WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-
-		int width = display.getWidth();
-		int height = display.getHeight();
-
-		puzzle = new Puzzle(monsters, 4, width, height);
+		puzzle = new Puzzle(monsters, 4);
 	}
 
 	@Override
 	public void onDraw(Canvas canvas)
 	{
+		
+		if(firstDraw)
+		{
+			firstDraw = false;
+			puzzle.shuffle(this.getWidth(), this.getHeight());
+		}
 		puzzle.draw(canvas);
 	}
 
