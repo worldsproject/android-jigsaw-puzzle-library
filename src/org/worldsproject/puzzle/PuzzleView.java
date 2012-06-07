@@ -7,13 +7,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.View.OnClickListener;
 
 public class PuzzleView extends View implements OnGestureListener,
 		OnDoubleTapListener
@@ -234,5 +233,17 @@ public class PuzzleView extends View implements OnGestureListener,
 			this.invalidate();
 		
 		return true;
+	}
+	
+	public void zoomIn()
+	{
+		this.puzzle.zoomIn();
+		this.invalidate();
+	}
+	
+	public void zoomOut()
+	{
+		this.puzzle.zoomOut();
+		this.invalidate();
 	}
 }

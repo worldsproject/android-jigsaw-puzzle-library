@@ -61,6 +61,23 @@ public class Puzzle
 			p.setY(RAN.nextInt(maxY));
 		}
 	}
+	
+	public void zoomIn()
+	{
+		for(Piece p: this.pieces)
+		{
+			p.zoomIn();
+		}
+	}
+	
+	
+	public void zoomOut()
+	{
+		for(Piece p: this.pieces)
+		{
+			p.zoomOut();
+		}
+	}
 
 	public void draw(Canvas c)
 	{

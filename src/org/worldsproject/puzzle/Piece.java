@@ -17,7 +17,10 @@ public class Piece
 
 	private PuzzleGroup group;
 
-	private Bitmap image;
+	private Bitmap original;
+	private Bitmap display;
+	
+	private float zoomScale = 1.0f;
 
 	private static final String DEBUG = "PuzzlePiece";
 
@@ -31,7 +34,8 @@ public class Piece
 
 	public Piece(Bitmap image)
 	{
-		this.image = image;
+		this.original = image;
+		this.display = image;
 		this.group = new PuzzleGroup();
 		this.group.addPiece(this);
 	}
@@ -40,19 +44,38 @@ public class Piece
 	{
 		orientation++;
 		Matrix m = new Matrix();
-		m.setRotate(90, image.getWidth() / 2, image.getHeight() / 2);
-		image = Bitmap.createBitmap(image, 0, 0, image.getWidth(),
-				image.getHeight(), m, true);
+		m.setRotate(90, original.getWidth() / 2, original.getHeight() / 2);
+		original = Bitmap.createBitmap(original, 0, 0, original.getWidth(),
+				original.getHeight(), m, true);
 
 		if (orientation >= 4)
 		{
 			orientation = 0;
 		}
 	}
+	
+	public void zoomIn()
+	{
+		zoomScale += 0.1;
+		Matrix scale = new Matrix();
+		scale.postScale(zoomScale, zoomScale, original.getWidth()/2, original.getHeight()/2);
+		display = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), scale, false);
+	}
+	
+	public void zoomOut()
+	{
+		if(zoomScale == 0.1)
+			return;
+		
+		zoomScale -= 0.1;
+		Matrix scale = new Matrix();
+		scale.postScale(zoomScale, zoomScale, original.getWidth()/2, original.getHeight()/2);
+		display = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), scale, false);
+	}
 
 	public void draw(Canvas c)
 	{
-		c.drawBitmap(image, x, y, null);
+		c.drawBitmap(display, x, y, null);
 	}
 
 	public int getX()
@@ -77,12 +100,12 @@ public class Piece
 
 	public int getHeight()
 	{
-		return this.image.getHeight();
+		return this.original.getHeight();
 	}
 
 	public int getWidth()
 	{
-		return this.image.getWidth();
+		return this.original.getWidth();
 	}
 
 	public Piece getTop()
@@ -136,7 +159,7 @@ public class Piece
 			return false;
 
 		return top.inMe(this.x, this.x)
-				|| top.inMe(this.x + this.image.getWidth(), y);
+				|| top.inMe(this.x + this.original.getWidth(), y);
 	}
 
 	public boolean inRight()
@@ -144,8 +167,8 @@ public class Piece
 		if (right == null)
 			return false;
 
-		return right.inMe(this.x + this.image.getWidth(), y)
-				|| right.inMe(this.x + this.image.getWidth(), y);
+		return right.inMe(this.x + this.original.getWidth(), y)
+				|| right.inMe(this.x + this.original.getWidth(), y);
 	}
 
 	public boolean inBottom()
@@ -153,8 +176,8 @@ public class Piece
 		if (bottom == null)
 			return false;
 
-		return bottom.inMe(this.x + this.image.getWidth(), y)
-				|| bottom.inMe(this.x, this.image.getHeight() + y);
+		return bottom.inMe(this.x + this.original.getWidth(), y)
+				|| bottom.inMe(this.x, this.original.getHeight() + y);
 	}
 
 	public boolean inLeft()
@@ -162,9 +185,9 @@ public class Piece
 		if (left == null)
 			return false;
 
-		return left.inMe(this.x, this.image.getHeight() + y)
-				|| left.inMe(this.x + this.image.getWidth(), this.y
-						+ this.image.getHeight());
+		return left.inMe(this.x, this.original.getHeight() + y)
+				|| left.inMe(this.x + this.original.getWidth(), this.y
+						+ this.original.getHeight());
 	}
 
 	public void addToGroup(PuzzleGroup pg)
@@ -184,8 +207,8 @@ public class Piece
 
 	public boolean inMe(int x, int y)
 	{
-		if (x >= this.x && x <= (this.x + this.image.getWidth()) && y >= this.y
-				&& y <= (this.y + this.image.getHeight()))
+		if (x >= this.x && x <= (this.x + this.original.getWidth()) && y >= this.y
+				&& y <= (this.y + this.original.getHeight()))
 			return true;
 
 		return false;

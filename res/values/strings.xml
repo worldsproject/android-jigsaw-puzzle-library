@@ -3,5 +3,7 @@
 
     <string name="hello">Hello World, PuzzleActivity!</string>
     <string name="app_name">Puzzle</string>
+    <string name="zoom_in">Zoom In</string>
+    <string name="zoom_out">Zoom Out</string>
 
 </resources>
