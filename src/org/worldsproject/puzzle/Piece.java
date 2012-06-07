@@ -57,20 +57,29 @@ public class Piece
 	public void zoomIn()
 	{
 		zoomScale += 0.1;
-		Matrix scale = new Matrix();
-		scale.postScale(zoomScale, zoomScale, original.getWidth()/2, original.getHeight()/2);
-		display = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), scale, false);
+		zoomEffect();
 	}
 	
 	public void zoomOut()
 	{
-		if(zoomScale == 0.1)
+		if(zoomScale <= 0.1)
 			return;
 		
 		zoomScale -= 0.1;
+		zoomEffect();
+	}
+
+	private void zoomEffect()
+	{
+		int oldWidth = display.getWidth();
+		int oldHeight = display.getHeight();
+		
 		Matrix scale = new Matrix();
 		scale.postScale(zoomScale, zoomScale, original.getWidth()/2, original.getHeight()/2);
 		display = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), scale, false);
+		
+		this.setX(this.getX() + (display.getWidth() - oldWidth)/2);
+		this.setY(this.getY() - (display.getHeight() - oldHeight)/2);
 	}
 
 	public void draw(Canvas c)

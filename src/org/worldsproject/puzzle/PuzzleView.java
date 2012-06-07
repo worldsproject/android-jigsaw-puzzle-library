@@ -173,7 +173,11 @@ public class PuzzleView extends View implements OnGestureListener,
 
 		if (tapped == null) // We aren't hitting a piece
 		{
-			return false;
+			for(Piece p : this.puzzle.getPieces())
+			{
+				p.setX((int)-distanceX);
+				p.setY((int)-distanceY);
+			}
 		}
 		else
 		{
