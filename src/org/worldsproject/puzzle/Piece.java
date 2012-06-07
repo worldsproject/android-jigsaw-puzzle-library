@@ -60,7 +60,7 @@ public class Piece
 		zoomEffect();
 	}
 	
-	public void zoomOut()
+	public void zoomOut() 
 	{
 		if(zoomScale <= 0.1)
 			return;
@@ -109,12 +109,12 @@ public class Piece
 
 	public int getHeight()
 	{
-		return this.original.getHeight();
+		return this.display.getHeight();
 	}
 
 	public int getWidth()
 	{
-		return this.original.getWidth();
+		return this.display.getWidth();
 	}
 
 	public Piece getTop()
@@ -167,8 +167,8 @@ public class Piece
 		if (top == null)
 			return false;
 
-		return top.inMe(this.x, this.x)
-				|| top.inMe(this.x + this.original.getWidth(), y);
+		return top.inMe(this.x, this.y)
+				|| top.inMe(this.x + this.display.getWidth(), y);
 	}
 
 	public boolean inRight()
@@ -176,8 +176,8 @@ public class Piece
 		if (right == null)
 			return false;
 
-		return right.inMe(this.x + this.original.getWidth(), y)
-				|| right.inMe(this.x + this.original.getWidth(), y);
+		return right.inMe(this.x + this.display.getWidth(), y)
+				|| right.inMe(this.x + this.display.getWidth(), y);
 	}
 
 	public boolean inBottom()
@@ -185,8 +185,8 @@ public class Piece
 		if (bottom == null)
 			return false;
 
-		return bottom.inMe(this.x + this.original.getWidth(), y)
-				|| bottom.inMe(this.x, this.original.getHeight() + y);
+		return bottom.inMe(this.x + this.display.getWidth(), y)
+				|| bottom.inMe(this.x, this.display.getHeight() + y);
 	}
 
 	public boolean inLeft()
@@ -194,9 +194,9 @@ public class Piece
 		if (left == null)
 			return false;
 
-		return left.inMe(this.x, this.original.getHeight() + y)
-				|| left.inMe(this.x + this.original.getWidth(), this.y
-						+ this.original.getHeight());
+		return left.inMe(this.x, this.display.getHeight() + y)
+				|| left.inMe(this.x + this.display.getWidth(), this.y
+						+ this.display.getHeight());
 	}
 
 	public void addToGroup(PuzzleGroup pg)
@@ -216,8 +216,8 @@ public class Piece
 
 	public boolean inMe(int x, int y)
 	{
-		if (x >= this.x && x <= (this.x + this.original.getWidth()) && y >= this.y
-				&& y <= (this.y + this.original.getHeight()))
+		if (x >= this.x && x <= (this.x + this.display.getWidth()) && y >= this.y
+				&& y <= (this.y + this.display.getHeight()))
 			return true;
 
 		return false;
