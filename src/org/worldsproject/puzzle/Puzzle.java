@@ -91,4 +91,13 @@ public class Puzzle
 	{
 		return this.pieces;
 	}
+	
+	public void solve()
+	{
+		for(Piece p: this.pieces)
+		{
+			p.snap(p.getLeft());
+			p.snap(p.getTop());
+		}
+	}
 }
