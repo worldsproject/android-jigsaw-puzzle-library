@@ -124,8 +124,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	{
 		// Get the piece that is under this tap.
 		Piece possibleNewTapped = null;
-		boolean nothing = true;
-
+		boolean shouldPan = true;
 		for (Piece p : this.puzzle.getPieces())
 		{
 			if (p.inMe((int) e1.getX(), (int) e1.getY()))
@@ -139,8 +138,8 @@ public class PuzzleView extends View implements OnGestureListener,
 				{
 					possibleNewTapped = p;
 				}
-				
-				nothing = false;
+				shouldPan = false;
+				break;
 			}
 		}
 
@@ -149,7 +148,7 @@ public class PuzzleView extends View implements OnGestureListener,
 			tapped = possibleNewTapped;
 		}
 		
-		if(!nothing)
+		if(shouldPan)
 		{
 			tapped = null;
 		}
