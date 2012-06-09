@@ -22,9 +22,6 @@ public class Mask
 	private boolean left;
 
 	private Point topLeft;
-	private Point topRight;
-	private Point bottomLeft;
-	private Point bottomRight;
 
 	private Type type;
 
@@ -34,22 +31,22 @@ public class Mask
 
 	private Difficulty difficulty;
 
-	public Mask(Context context, boolean top, boolean right, int width,
-			int height, Difficulty difficulty)
+	public Mask(Context context, boolean top, boolean right,
+			Difficulty difficulty)
 	{
-		this(context, top, right, false, false, width, height, difficulty);
+		this(context, top, right, false, false, difficulty);
 		type = Type.CORNER;
 	}
 
 	public Mask(Context context, boolean top, boolean right, boolean bottom,
-			int width, int height, Difficulty difficulty)
+			Difficulty difficulty)
 	{
-		this(context, top, right, bottom, false, width, height, difficulty);
+		this(context, top, right, bottom, false, difficulty);
 		type = Type.EDGE;
 	}
 
 	public Mask(Context context, boolean top, boolean right, boolean bottom,
-			boolean left, int width, int height, Difficulty difficulty)
+			boolean left, Difficulty difficulty)
 	{
 		super();
 
@@ -66,24 +63,21 @@ public class Mask
 
 		mask = loadBitmap();
 
-		//Here we have to account for all that transparent border.
-		//We should be making pieces off of the square area
-		//With overhangs going 'outside' the piece to make it look
-		//All puzzle like and pretty.
+		// Here we have to account for all that transparent border.
+		// We should be making pieces off of the square area
+		// With overhangs going 'outside' the piece to make it look
+		// All puzzle like and pretty.
 		int offset = 0;
-		
-		//Because the pieces have already been make, we know the offsets.
-		if(difficulty == Difficulty.EASY)
+
+		// Because the pieces have already been make, we know the offsets.
+		if (difficulty == Difficulty.EASY)
 			offset = 10;
-		else if(difficulty == Difficulty.MEDIUM)
+		else if (difficulty == Difficulty.MEDIUM)
 			offset = 8;
 		else
 			offset = 5;
-		
+
 		topLeft = new Point(offset, offset);
-		topRight = new Point(this.getWidth() - offset, offset);
-		bottomLeft = new Point(offset, this.getHeight() - offset);
-		bottomRight = new Point(this.getWidth() - offset, mask.getHeight() - offset);
 	}
 
 	private void fillResourceMapping()
@@ -182,10 +176,10 @@ public class Mask
 	private Bitmap loadBitmap()
 	{
 		StringBuffer name = new StringBuffer("mask_");
-		
-		if(difficulty == Difficulty.EASY)
+
+		if (difficulty == Difficulty.EASY)
 			name.append("64_");
-		else if(difficulty == Difficulty.MEDIUM)
+		else if (difficulty == Difficulty.MEDIUM)
 			name.append("48_");
 		else
 			name.append("32_");
@@ -279,7 +273,7 @@ public class Mask
 	{
 		return type;
 	}
-	
+
 	public Difficulty getDifficulty()
 	{
 		return difficulty;
@@ -293,21 +287,6 @@ public class Mask
 	public Point getTopLeft()
 	{
 		return topLeft;
-	}
-
-	public Point getTopRight()
-	{
-		return topRight;
-	}
-
-	public Point getBottomLeft()
-	{
-		return bottomLeft;
-	}
-
-	public Point getBottomRight()
-	{
-		return bottomRight;
 	}
 
 	public int getWidth()
