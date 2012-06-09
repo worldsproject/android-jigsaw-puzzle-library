@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
@@ -16,7 +15,6 @@ import android.view.View;
 public class PuzzleView extends View implements OnGestureListener,
 		OnDoubleTapListener
 {
-	private static final String DEBUG = "PuzzleView";
 	private Resources r;
 	private Puzzle puzzle;
 	private GestureDetector gesture;
@@ -102,7 +100,6 @@ public class PuzzleView extends View implements OnGestureListener,
 		{
 			if (p.inMe((int) e.getX(), (int) e.getY()))
 			{
-				Log.v(DEBUG, "Turn");
 				p.turn();
 			}
 			this.invalidate();
@@ -143,7 +140,7 @@ public class PuzzleView extends View implements OnGestureListener,
 				break;
 			}
 		}
-		Log.v(DEBUG, "- - - - - - - - - - - - - -");
+		
 		if (possibleNewTapped != null)
 		{
 			tapped = possibleNewTapped;

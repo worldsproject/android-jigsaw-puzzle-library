@@ -3,7 +3,6 @@ package org.worldsproject.puzzle;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.util.Log;
 
 public class Piece
 {
@@ -19,10 +18,6 @@ public class Piece
 
 	private Bitmap original;
 	private Bitmap display;
-	
-	private float zoomScale = 1.0f;
-
-	private static final String DEBUG = "PuzzlePiece";
 
 	/*
 	 * 0 is the correct orientation.
