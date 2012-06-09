@@ -2,8 +2,6 @@ package org.worldsproject.puzzle;
 
 import java.util.HashSet;
 
-import android.util.Log;
-
 public class PuzzleGroup
 {
 	private HashSet<Piece> group = new HashSet<Piece>();
