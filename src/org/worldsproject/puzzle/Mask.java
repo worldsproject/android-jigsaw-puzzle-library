@@ -3,12 +3,12 @@ package org.worldsproject.puzzle;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.worldsproject.puzzle.enums.Difficulty;
 import org.worldsproject.puzzle.enums.Type;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 
@@ -32,21 +32,24 @@ public class Mask
 
 	private Context context;
 
-	public Mask(Context context, boolean top, boolean right, int width, int height)
+	private Difficulty difficulty;
+
+	public Mask(Context context, boolean top, boolean right, int width,
+			int height, Difficulty difficulty)
 	{
-		this(context, top, right, false, false, width, height);
+		this(context, top, right, false, false, width, height, difficulty);
 		type = Type.CORNER;
 	}
 
 	public Mask(Context context, boolean top, boolean right, boolean bottom,
-			int width, int height)
+			int width, int height, Difficulty difficulty)
 	{
-		this(context, top, right, bottom, false, width, height);
+		this(context, top, right, bottom, false, width, height, difficulty);
 		type = Type.EDGE;
 	}
 
-	public Mask(Context context, boolean top, boolean right, boolean bottom, boolean left,
-			int width, int height)
+	public Mask(Context context, boolean top, boolean right, boolean bottom,
+			boolean left, int width, int height, Difficulty difficulty)
 	{
 		super();
 
@@ -56,58 +59,136 @@ public class Mask
 		this.right = right;
 		this.bottom = bottom;
 		this.left = left;
-		type = Type.FULL;
+		this.type = Type.FULL;
+		this.difficulty = difficulty;
 
 		fillResourceMapping();
 
-		mask = loadBitmap(width, height);
+		mask = loadBitmap();
 
-		topLeft = new Point(0, 0);
-		topRight = new Point(0, mask.getHeight());
-		bottomLeft = new Point(mask.getWidth(), 0);
-		bottomRight = new Point(mask.getWidth(), mask.getHeight());
-
-		findPoints(topLeft, topRight, bottomLeft, bottomRight);
+		//Here we have to account for all that transparent border.
+		//We should be making pieces off of the square area
+		//With overhangs going 'outside' the piece to make it look
+		//All puzzle like and pretty.
+		int offset = 0;
+		
+		//Because the pieces have already been make, we know the offsets.
+		if(difficulty == Difficulty.EASY)
+			offset = 10;
+		else if(difficulty == Difficulty.MEDIUM)
+			offset = 8;
+		else
+			offset = 5;
+		
+		topLeft = new Point(offset, offset);
+		topRight = new Point(this.getWidth() - offset, offset);
+		bottomLeft = new Point(offset, this.getHeight() - offset);
+		bottomRight = new Point(this.getWidth() - offset, mask.getHeight() - offset);
 	}
 
 	private void fillResourceMapping()
 	{
-		if(resources.containsKey("corner_0_0"))
+		if (resources.isEmpty() == false)
 			return;
 
-		resources.put("corner_0_0", R.raw.corner_0_0);
-		resources.put("corner_0_1", R.raw.corner_0_1);
-		resources.put("corner_1_0", R.raw.corner_1_0);
-		resources.put("corner_1_1", R.raw.corner_1_1);
-		resources.put("edge_0_0_0", R.raw.edge_0_0_0);
-		resources.put("edge_0_0_1", R.raw.edge_0_0_1);
-		resources.put("edge_0_1_0", R.raw.edge_0_1_0);
-		resources.put("edge_0_1_1", R.raw.edge_0_1_1);
-		resources.put("edge_1_0_0", R.raw.edge_1_0_0);
-		resources.put("edge_1_0_1", R.raw.edge_1_0_1);
-		resources.put("edge_1_1_0", R.raw.edge_1_1_0);
-		resources.put("edge_1_1_1", R.raw.edge_1_1_1);
-		resources.put("full_0_0_0_0", R.raw.full_0_0_0_0);
-		resources.put("full_0_0_0_1", R.raw.full_0_0_0_1);
-		resources.put("full_0_0_1_0", R.raw.full_0_0_1_0);
-		resources.put("full_0_0_1_1", R.raw.full_0_0_1_1);
-		resources.put("full_0_1_0_0", R.raw.full_0_1_0_0);
-		resources.put("full_0_1_0_1", R.raw.full_0_1_0_1);
-		resources.put("full_0_1_1_0", R.raw.full_0_1_1_0);
-		resources.put("full_0_1_1_1", R.raw.full_0_1_1_1);
-		resources.put("full_1_0_0_0", R.raw.full_1_0_0_0);
-		resources.put("full_1_0_0_1", R.raw.full_1_0_0_1);
-		resources.put("full_1_0_1_0", R.raw.full_1_0_1_0);
-		resources.put("full_1_0_1_1", R.raw.full_1_0_1_1);
-		resources.put("full_1_1_0_0", R.raw.full_1_1_0_0);
-		resources.put("full_1_1_0_1", R.raw.full_1_1_0_1);
-		resources.put("full_1_1_1_0", R.raw.full_1_1_1_0);
-		resources.put("full_1_1_1_1", R.raw.full_1_1_1_1);
+		resources.put("mask_32_corner_0_0", R.raw.mask_32_corner_0_0);
+		resources.put("mask_32_corner_0_1", R.raw.mask_32_corner_0_1);
+		resources.put("mask_32_corner_1_0", R.raw.mask_32_corner_1_0);
+		resources.put("mask_32_corner_1_1", R.raw.mask_32_corner_1_1);
+		resources.put("mask_32_edge_0_0_0", R.raw.mask_32_edge_0_0_0);
+		resources.put("mask_32_edge_0_0_1", R.raw.mask_32_edge_0_0_1);
+		resources.put("mask_32_edge_0_1_0", R.raw.mask_32_edge_0_1_0);
+		resources.put("mask_32_edge_0_1_1", R.raw.mask_32_edge_0_1_1);
+		resources.put("mask_32_edge_1_0_0", R.raw.mask_32_edge_1_0_0);
+		resources.put("mask_32_edge_1_0_1", R.raw.mask_32_edge_1_0_1);
+		resources.put("mask_32_edge_1_1_0", R.raw.mask_32_edge_1_1_0);
+		resources.put("mask_32_edge_1_1_1", R.raw.mask_32_edge_1_1_1);
+		resources.put("mask_32_full_0_0_0_0", R.raw.mask_32_full_0_0_0_0);
+		resources.put("mask_32_full_0_0_0_1", R.raw.mask_32_full_0_0_0_1);
+		resources.put("mask_32_full_0_0_1_0", R.raw.mask_32_full_0_0_1_0);
+		resources.put("mask_32_full_0_0_1_1", R.raw.mask_32_full_0_0_1_1);
+		resources.put("mask_32_full_0_1_0_0", R.raw.mask_32_full_0_1_0_0);
+		resources.put("mask_32_full_0_1_0_1", R.raw.mask_32_full_0_1_0_1);
+		resources.put("mask_32_full_0_1_1_0", R.raw.mask_32_full_0_1_1_0);
+		resources.put("mask_32_full_0_1_1_1", R.raw.mask_32_full_0_1_1_1);
+		resources.put("mask_32_full_1_0_0_0", R.raw.mask_32_full_1_0_0_0);
+		resources.put("mask_32_full_1_0_0_1", R.raw.mask_32_full_1_0_0_1);
+		resources.put("mask_32_full_1_0_1_0", R.raw.mask_32_full_1_0_1_0);
+		resources.put("mask_32_full_1_0_1_1", R.raw.mask_32_full_1_0_1_1);
+		resources.put("mask_32_full_1_1_0_0", R.raw.mask_32_full_1_1_0_0);
+		resources.put("mask_32_full_1_1_0_1", R.raw.mask_32_full_1_1_0_1);
+		resources.put("mask_32_full_1_1_1_0", R.raw.mask_32_full_1_1_1_0);
+		resources.put("mask_32_full_1_1_1_1", R.raw.mask_32_full_1_1_1_1);
+
+		resources.put("mask_48_corner_0_0", R.raw.mask_48_corner_0_0);
+		resources.put("mask_48_corner_0_1", R.raw.mask_48_corner_0_1);
+		resources.put("mask_48_corner_1_0", R.raw.mask_48_corner_1_0);
+		resources.put("mask_48_corner_1_1", R.raw.mask_48_corner_1_1);
+		resources.put("mask_48_edge_0_0_0", R.raw.mask_48_edge_0_0_0);
+		resources.put("mask_48_edge_0_0_1", R.raw.mask_48_edge_0_0_1);
+		resources.put("mask_48_edge_0_1_0", R.raw.mask_48_edge_0_1_0);
+		resources.put("mask_48_edge_0_1_1", R.raw.mask_48_edge_0_1_1);
+		resources.put("mask_48_edge_1_0_0", R.raw.mask_48_edge_1_0_0);
+		resources.put("mask_48_edge_1_0_1", R.raw.mask_48_edge_1_0_1);
+		resources.put("mask_48_edge_1_1_0", R.raw.mask_48_edge_1_1_0);
+		resources.put("mask_48_edge_1_1_1", R.raw.mask_48_edge_1_1_1);
+		resources.put("mask_48_full_0_0_0_0", R.raw.mask_48_full_0_0_0_0);
+		resources.put("mask_48_full_0_0_0_1", R.raw.mask_48_full_0_0_0_1);
+		resources.put("mask_48_full_0_0_1_0", R.raw.mask_48_full_0_0_1_0);
+		resources.put("mask_48_full_0_0_1_1", R.raw.mask_48_full_0_0_1_1);
+		resources.put("mask_48_full_0_1_0_0", R.raw.mask_48_full_0_1_0_0);
+		resources.put("mask_48_full_0_1_0_1", R.raw.mask_48_full_0_1_0_1);
+		resources.put("mask_48_full_0_1_1_0", R.raw.mask_48_full_0_1_1_0);
+		resources.put("mask_48_full_0_1_1_1", R.raw.mask_48_full_0_1_1_1);
+		resources.put("mask_48_full_1_0_0_0", R.raw.mask_48_full_1_0_0_0);
+		resources.put("mask_48_full_1_0_0_1", R.raw.mask_48_full_1_0_0_1);
+		resources.put("mask_48_full_1_0_1_0", R.raw.mask_48_full_1_0_1_0);
+		resources.put("mask_48_full_1_0_1_1", R.raw.mask_48_full_1_0_1_1);
+		resources.put("mask_48_full_1_1_0_0", R.raw.mask_48_full_1_1_0_0);
+		resources.put("mask_48_full_1_1_0_1", R.raw.mask_48_full_1_1_0_1);
+		resources.put("mask_48_full_1_1_1_0", R.raw.mask_48_full_1_1_1_0);
+		resources.put("mask_48_full_1_1_1_1", R.raw.mask_48_full_1_1_1_1);
+
+		resources.put("mask_64_corner_0_0", R.raw.mask_64_corner_0_0);
+		resources.put("mask_64_corner_0_1", R.raw.mask_64_corner_0_1);
+		resources.put("mask_64_corner_1_0", R.raw.mask_64_corner_1_0);
+		resources.put("mask_64_corner_1_1", R.raw.mask_64_corner_1_1);
+		resources.put("mask_64_edge_0_0_0", R.raw.mask_64_edge_0_0_0);
+		resources.put("mask_64_edge_0_0_1", R.raw.mask_64_edge_0_0_1);
+		resources.put("mask_64_edge_0_1_0", R.raw.mask_64_edge_0_1_0);
+		resources.put("mask_64_edge_0_1_1", R.raw.mask_64_edge_0_1_1);
+		resources.put("mask_64_edge_1_0_0", R.raw.mask_64_edge_1_0_0);
+		resources.put("mask_64_edge_1_0_1", R.raw.mask_64_edge_1_0_1);
+		resources.put("mask_64_edge_1_1_0", R.raw.mask_64_edge_1_1_0);
+		resources.put("mask_64_edge_1_1_1", R.raw.mask_64_edge_1_1_1);
+		resources.put("mask_64_full_0_0_0_0", R.raw.mask_64_full_0_0_0_0);
+		resources.put("mask_64_full_0_0_0_1", R.raw.mask_64_full_0_0_0_1);
+		resources.put("mask_64_full_0_0_1_0", R.raw.mask_64_full_0_0_1_0);
+		resources.put("mask_64_full_0_0_1_1", R.raw.mask_64_full_0_0_1_1);
+		resources.put("mask_64_full_0_1_0_0", R.raw.mask_64_full_0_1_0_0);
+		resources.put("mask_64_full_0_1_0_1", R.raw.mask_64_full_0_1_0_1);
+		resources.put("mask_64_full_0_1_1_0", R.raw.mask_64_full_0_1_1_0);
+		resources.put("mask_64_full_0_1_1_1", R.raw.mask_64_full_0_1_1_1);
+		resources.put("mask_64_full_1_0_0_0", R.raw.mask_64_full_1_0_0_0);
+		resources.put("mask_64_full_1_0_0_1", R.raw.mask_64_full_1_0_0_1);
+		resources.put("mask_64_full_1_0_1_0", R.raw.mask_64_full_1_0_1_0);
+		resources.put("mask_64_full_1_0_1_1", R.raw.mask_64_full_1_0_1_1);
+		resources.put("mask_64_full_1_1_0_0", R.raw.mask_64_full_1_1_0_0);
+		resources.put("mask_64_full_1_1_0_1", R.raw.mask_64_full_1_1_0_1);
+		resources.put("mask_64_full_1_1_1_0", R.raw.mask_64_full_1_1_1_0);
+		resources.put("mask_64_full_1_1_1_1", R.raw.mask_64_full_1_1_1_1);
 	}
 
-	private Bitmap loadBitmap(int width, int height)
+	private Bitmap loadBitmap()
 	{
-		StringBuffer name = new StringBuffer();
+		StringBuffer name = new StringBuffer("mask_");
+		
+		if(difficulty == Difficulty.EASY)
+			name.append("64_");
+		else if(difficulty == Difficulty.MEDIUM)
+			name.append("48_");
+		else
+			name.append("32_");
 
 		if (type == Type.FULL)
 		{
@@ -132,41 +213,11 @@ public class Mask
 			append(right, name);
 		}
 
-		InputStream is = context.getResources().openRawResource(resources.get(name));		
+		InputStream is = context.getResources().openRawResource(
+				resources.get(name));
 
-		return Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), width, height, false);
+		return BitmapFactory.decodeStream(is);
 
-	}
-
-	private void findPoints(Point tl, Point tr, Point bl, Point br)
-	{	
-		//First find the top left point.
-		while(mask.getPixel(tl.x, tl.y) != Color.BLACK)
-		{
-			tl.x++;
-			tl.y++;
-		}
-
-		//Top right point
-		while(mask.getPixel(tl.x, tl.y) != Color.BLACK)
-		{
-			tr.x--;
-			tr.y++;
-		}
-
-		//Bottom left point
-		while(mask.getPixel(tl.x, tl.y) != Color.BLACK)
-		{
-			tr.x++;
-			tr.y--;
-		}
-
-		//Bottom right point
-		while(mask.getPixel(tl.x, tl.y) != Color.BLACK)
-		{
-			tr.x--;
-			tr.y--;
-		}
 	}
 
 	private void append(boolean dir, StringBuffer buf)
@@ -178,16 +229,19 @@ public class Mask
 	}
 
 	/**
-	 * Rotates the piece by 90* times.
-	 * @param times - amount of 90* turns.
+	 * Rotates the mask by 90° x the number given.
+	 * 
+	 * @param times
+	 *            - amount of 90° turns.
 	 */
 	public void rotate(int times)
 	{
 		Matrix rotM = new Matrix();
-		rotM.setRotate((90*times)%360, mask.getWidth(), mask.getHeight());
-		mask = Bitmap.createBitmap(mask, 0, 0, mask.getWidth(), mask.getHeight(), rotM, true);
+		rotM.setRotate((90 * times) % 360, mask.getWidth(), mask.getHeight());
+		mask = Bitmap.createBitmap(mask, 0, 0, mask.getWidth(),
+				mask.getHeight(), rotM, true);
 
-		for(int i = 0; i < times; i++)
+		for (int i = 0; i < times; i++)
 		{
 			boolean newRight = top;
 			boolean newBottom = right;
@@ -225,6 +279,11 @@ public class Mask
 	{
 		return type;
 	}
+	
+	public Difficulty getDifficulty()
+	{
+		return difficulty;
+	}
 
 	public Bitmap getMask()
 	{
@@ -250,12 +309,12 @@ public class Mask
 	{
 		return bottomRight;
 	}
-	
+
 	public int getWidth()
 	{
 		return mask.getWidth();
 	}
-	
+
 	public int getHeight()
 	{
 		return mask.getHeight();
