@@ -79,10 +79,8 @@ public class PuzzleView extends View implements OnGestureListener,
 			firstDraw = false;
 			puzzle.shuffle(this.getWidth(), this.getHeight());
 		}
-		canvas.scale(scale, scale);
+		canvas.scale(scale, scale, 200, 200);
 		puzzle.draw(canvas);
-		
-		Log.v(DEBUG, "Scale: " + scale);
 	}
 
 	@Override
@@ -173,7 +171,6 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public void onLongPress(MotionEvent e)
 	{
-		Log.v(DEBUG, "Long Press recorded");
 
 	}
 
@@ -183,11 +180,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	{
 		if (tapped == null) // We aren't hitting a piece
 		{
-			for (Piece p : this.puzzle.getPieces())
-			{
-				p.setX(p.getX() - (int)distanceX);
-				p.setY(p.getY() - (int)distanceY);
-			}
+			puzzle.translate(distanceX, distanceY);
 			
 			this.invalidate();
 		}

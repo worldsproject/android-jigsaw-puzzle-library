@@ -75,6 +75,15 @@ public class Puzzle
 		return this.pieces;
 	}
 	
+	public void translate(float x, float y)
+	{
+		for (Piece p : this.pieces)
+		{
+			p.setX(p.getX() - (int)x);
+			p.setY(p.getY() - (int)y);
+		}
+	}
+	
 	public void solve()
 	{
 		for(Piece p: this.pieces)
