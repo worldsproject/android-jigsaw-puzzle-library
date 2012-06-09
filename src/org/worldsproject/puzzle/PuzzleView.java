@@ -12,7 +12,6 @@ import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 
 public class PuzzleView extends View implements OnGestureListener,
 		OnDoubleTapListener
@@ -79,7 +78,7 @@ public class PuzzleView extends View implements OnGestureListener,
 			firstDraw = false;
 			puzzle.shuffle(this.getWidth(), this.getHeight());
 		}
-		canvas.scale(scale, scale, 200, 200);
+		canvas.scale(scale, scale);
 		puzzle.draw(canvas);
 	}
 
@@ -129,7 +128,7 @@ public class PuzzleView extends View implements OnGestureListener,
 		boolean shouldPan = true;
 		for (Piece p : this.puzzle.getPieces())
 		{
-			if (p.inMe((int) e1.getX(), (int) e1.getY()))
+			if (p.inMe((int) (e1.getX()/scale), (int) (e1.getY()/scale)))
 			{
 				if (p == tapped)
 				{
@@ -144,7 +143,7 @@ public class PuzzleView extends View implements OnGestureListener,
 				break;
 			}
 		}
-
+		Log.v(DEBUG, "- - - - - - - - - - - - - -");
 		if (possibleNewTapped != null)
 		{
 			tapped = possibleNewTapped;
@@ -232,7 +231,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public void onShowPress(MotionEvent e)
 	{
-		Log.v(DEBUG, "Show Press recorded");
+		
 	}
 
 	@Override

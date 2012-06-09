@@ -190,7 +190,6 @@ public class Piece
 		if (x >= this.x && x <= (this.x + this.display.getWidth()) && y >= this.y
 				&& y <= (this.y + this.display.getHeight()))
 		{
-			Log.v(DEBUG, "Reported in!");
 			return true;
 		}
 
