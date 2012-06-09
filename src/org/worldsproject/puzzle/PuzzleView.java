@@ -23,6 +23,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	private GestureDetector gesture;
 	private Piece tapped;
 	private boolean firstDraw = true;
+	private float scale = 1.0f;
 
 	public PuzzleView(Context context)
 	{
@@ -72,13 +73,16 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-
+		
 		if (firstDraw)
 		{
 			firstDraw = false;
 			puzzle.shuffle(this.getWidth(), this.getHeight());
 		}
+		canvas.scale(scale, scale);
 		puzzle.draw(canvas);
+		
+		Log.v(DEBUG, "Scale: " + scale);
 	}
 
 	@Override
@@ -249,13 +253,13 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	public void zoomIn()
 	{
-		this.puzzle.zoomIn();
+		scale += 0.1;
 		this.invalidate();
 	}
 
 	public void zoomOut()
 	{
-		this.puzzle.zoomOut();
+		scale -= 0.1;
 		this.invalidate();
 	}
 }

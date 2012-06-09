@@ -31,7 +31,7 @@ public class Piece
 	 * 3 is 270 degrees turned clockwise.
 	 */
 	private int orientation = 0;
-
+	
 	public Piece(Bitmap image)
 	{
 		this.original = image;
@@ -52,34 +52,6 @@ public class Piece
 		{
 			orientation = 0;
 		}
-	}
-	
-	public void zoomIn()
-	{
-		zoomScale += 0.1;
-		zoomEffect();
-	}
-	 
-	public void zoomOut() 
-	{
-		if(zoomScale <= 0.1)
-			return;
-		
-		zoomScale -= 0.1;
-		zoomEffect();
-	}
-
-	private void zoomEffect()
-	{
-		int oldWidth = display.getWidth();
-		int oldHeight = display.getHeight();
-		
-		Matrix scale = new Matrix();
-		scale.postScale(zoomScale, zoomScale, original.getWidth()/2, original.getHeight()/2);
-		display = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), scale, false);
-		
-		this.setX(this.getX() + (display.getWidth() - oldWidth)/2);
-		this.setY(this.getY() - (display.getHeight() - oldHeight)/2);
 	}
 
 	public void draw(Canvas c)
@@ -227,7 +199,7 @@ public class Piece
 
 	public void snap(Piece p)
 	{
-		if (group.sameGroup(this, p))
+		if (group.sameGroup(this, p) || p == null)
 		{
 			return;
 		}
