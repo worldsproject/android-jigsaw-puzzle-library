@@ -12,8 +12,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class PuzzleView extends View implements OnGestureListener,
-		OnDoubleTapListener
+public class PuzzleView extends View implements OnGestureListener, OnDoubleTapListener
 {
 	private Resources r;
 	private Puzzle puzzle;

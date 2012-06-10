@@ -1,240 +1,207 @@
 package org.worldsproject.puzzle;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.worldsproject.puzzle.enums.Difficulty;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
 public class PuzzleGenerator
 {
+	private static final Random RAN = new Random();
+
 	private Context context;
 	private Bitmap image;
+	private int pieceSize;
+	private Difficulty difficulty;
 
 	Random ran = new Random();
 
-	public PuzzleGenerator(Context c, Bitmap image, Difficulty difficulty)
+	public PuzzleGenerator(Context c)
 	{
-
 		this.context = c;
-		this.image = image;
-
-		Point[][] points = getGridPoints(image, difficulty);
-		int width = getScaling(image.getWidth(), points.length);
-		int height = getScaling(image.getWidth(), points[0].length);
-
-		Mask[][] masks = generateMasks(points, width, height);
-		
-		ArrayList<Bitmap> pieces = createSubimages(image, masks, points);
 	}
 
-	private int getScaling(int totalWidth, int requiredSpaces)
+	public Puzzle generatePuzzle(Bitmap image, Difficulty difficulty)
 	{
-		int idealWidth = totalWidth/requiredSpaces;
+		// Do we need to scale, and if so, by how much?
+		this.pieceSize = difficulty.pieceSize(difficulty);
+		this.difficulty = difficulty;
+		image = Bitmap.createScaledBitmap(image,
+				image.getWidth() + (image.getWidth() % pieceSize),
+				image.getHeight() + (image.getHeight() % pieceSize), false);
+
+		// Now we need to get our width and height.
+		int puzzle_width = (this.image.getWidth() / this.pieceSize);
+		int puzzle_height = (this.image.getHeight() / this.pieceSize);
+
+		// We use a linear array, because it is easier to iterate through and
+		// each mask
+		// knows who its neighbors are. We do not need to represent that again.
+		Mask[] masks = new Mask[puzzle_width * puzzle_height];
+
+		// Now we have an image that is able to be cut up perfectly.
+		// We should start by generating a corner.
+		Mask startPoint = getRandomCorner();
+		masks[0] = startPoint;
+
+		// We need some flags. Because we are iterating through in a predictable
+		// manner, it will be easy to know which edge and corner we are on.
+		//
+		// Corner_number keeps track of which corner we have passed. If we are not yet past
+		// corner number 1, and we see and edge (although we should only be seeing edges) we know
+		// that it is a top edge.
+		//
+		// left_edge will toggle after corner number 1, and before corner 2 as left and right 
+		// alternate in appearance.
+		int corner_number = 0;
+		boolean left_edge = true;
 		
-		
-		return 0;
-	}
-
-	private Point[][] getGridPoints(Bitmap image, Difficulty difficulty)
-	{
-		return null;
-	}
-
-	private Mask[][] generateMasks(Point[][] points, int width, int height)
-	{
-		Mask[][] rv = new Mask[points.length][points[0].length];
-
-		//First we start in the top left corner (points[0][0] and generate a random corner.
-		rv[0][0] = generateCorner(width, height);
-		rv[0][0].rotate(1);
-
-		//And so on for the other 3 corners.
-		rv[rv.length][0] = generateCorner(width, height);
-		rv[rv.length][0].rotate(2);
-
-		rv[0][rv[0].length] = generateCorner(width, height);
-
-		rv[rv.length][rv[0].length] = generateCorner(width, height);
-		rv[rv.length][rv[0].length].rotate(3);
-
-		//Now we need to generate the edges.
-
-		int pos = 1;
-
-		while(rv[pos][0] == null) //top edges
+		// We start at 1 because we already have our start point.
+		for (int i = 1; i < masks.length; i++)
 		{
-			if(rv[pos-1][0].isRight())
+			if(isCorner(i, puzzle_width-1, puzzle_height-1))
 			{
-				rv[pos][0] = new Mask(context, ran.nextBoolean(), ran.nextBoolean(), false, width, height);
-				rv[pos][0].rotate(1);
-			}
-			else
-			{
-				rv[pos][0] = new Mask(context, ran.nextBoolean(), ran.nextBoolean(), true, width, height);
-				rv[pos][0].rotate(1);
-			}
-			pos++;
-		}
-
-		//rightmost top edge piece.
-		boolean one = !rv[pos-1][0].isRight();
-		boolean two = !rv[pos+1][0].isLeft();
-
-		rv[pos][0] = new Mask(context, two, ran.nextBoolean(), one, width, height);
-		rv[pos][0].rotate(1);
-
-		//Right edge pieces
-		pos = 1;
-		int rvl = rv.length-1;
-		while(rv[rvl][pos] == null)
-		{
-			if(rv[rvl][pos-1].isBottom())
-			{
-				rv[rvl][pos] = new Mask(context, ran.nextBoolean(), ran.nextBoolean(), false, width, height);
-				rv[rvl][pos].rotate(2);
-			}
-			else
-			{
-				rv[rvl][pos] = new Mask(context, ran.nextBoolean(), ran.nextBoolean(), true, width, height);
-				rv[rvl][pos].rotate(2);
-			}
-
-			pos++;
-		}
-
-		//bottommost right edge piece.
-		one = !rv[rvl][pos-1].isBottom();
-		two = !rv[rvl][pos+1].isTop();
-
-		rv[rvl][pos] = new Mask(context, two, ran.nextBoolean(), one, width, height);
-		rv[rvl][pos].rotate(2);
-
-		//Bottom edge pieces.
-		pos = 1;
-		rvl = rv[0].length-1;
-
-		while(rv[pos][rvl] == null)
-		{
-			if(rv[pos-1][rvl].isRight())
-			{
-				rv[pos][rvl] = new Mask(context, false, ran.nextBoolean(), ran.nextBoolean(), width, height);
-				rv[pos][rvl].rotate(3);
-			}
-			else
-			{
-				rv[pos][rvl] = new Mask(context, true, ran.nextBoolean(), ran.nextBoolean(), width, height);
-				rv[pos][rvl].rotate(3);
-			}
-			pos++;
-		}
-
-		//rightmost bottom edge piece.
-		one = !rv[pos-1][rvl].isRight();
-		two = !rv[pos+1][rvl].isLeft();
-
-		rv[pos][rvl] = new Mask(context, one, ran.nextBoolean(), two, width, height);
-		rv[pos][rvl].rotate(3);
-
-		//Right edge pieces
-		pos = 1;
-		rvl = 0;
-		
-		while(rv[rvl][pos] == null)
-		{
-			if(rv[rvl][pos-1].isBottom())
-			{
-				rv[rvl][pos] = new Mask(context, false, ran.nextBoolean(), ran.nextBoolean(), width, height);
-			}
-			else
-			{
-				rv[rvl][pos] = new Mask(context, true, ran.nextBoolean(), ran.nextBoolean(), width, height);
-			}
-
-			pos++;
-		}
-
-		//bottommost right edge piece.
-		one = !rv[rvl][pos-1].isBottom();
-		two = !rv[rvl][pos+1].isTop();
-
-		rv[rvl][pos] = new Mask(context, one, ran.nextBoolean(), two, width, height);
-		
-		//Now we have to fill in all the middle pieces.
-		
-		boolean top;
-		boolean right;
-		boolean bottom;
-		boolean left;
-		
-		for(int x = 1; x < rv.length-2; x++)
-		{
-			for(int y = 1; y < rv[0].length-2; y++)
-			{
-				top = !rv[x][y-1].isBottom(); //Top ALWAYS exists.
-				left = !rv[x-1][y].isRight(); //Left ALWAYS exists.
+				corner_number++;
 				
-				if(rv[x+1][y] == null)
-					right = ran.nextBoolean();
+				if(corner_number == 1)
+				{
+					masks[i] = new Mask(context, RAN.nextBoolean(), !masks[i-1].isRight(), difficulty);
+					masks[i].rotate(2);
+				}
+				else if(corner_number == 2)
+				{
+					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), difficulty);
+				}
 				else
-					right = !rv[x+1][y].isLeft();
+				{
+					masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), difficulty);
+					masks[i].rotate(3);
+				}
 				
-				if(rv[x][y+1] == null)
-					bottom = ran.nextBoolean();
-				else
-					bottom = !rv[x][y+1].isTop();
-				
-				rv[x][y] = new Mask(context, top, right, bottom, left, width, height);
+				continue;
 			}
+			
+			//This is all of the top edge cases.
+			if(corner_number < 1)
+			{
+				masks[i] = new Mask(context, RAN.nextBoolean(), RAN.nextBoolean(), !masks[i-1].isRight(), difficulty);
+				masks[i].rotate(1);
+				continue;
+			}
+			
+			//This handles all of the bottom edge cases.
+			if(corner_number > 2)
+			{
+				masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), difficulty);
+				masks[i].rotate(3);
+				continue;
+			}
+			
+			//Now the only possible edge that we could have reached so far are the left
+			//and right edges, so we can safely toggle.
+			if(isEdge(i, puzzle_width-1, puzzle_height-1))
+			{
+				if(left_edge)
+				{
+					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), RAN.nextBoolean(), difficulty);
+				}
+				else
+				{
+					masks[i] = new Mask(context, RAN.nextBoolean(), !masks[i-1].isLeft(), !masks[i-puzzle_width].isBottom(), difficulty);
+					masks[i].rotate(2);
+				}
+				
+				left_edge = !left_edge;
+				continue;
+			}
+			
+			//The only possible option now are the full pieces.
+			masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), RAN.nextBoolean(), masks[i-1].isLeft(), difficulty);
 		}
 		
-		return rv;
-	}
-
-	private ArrayList<Bitmap> createSubimages(Bitmap image, Mask[][] masks, Point[][] points)
-	{
-		Paint maskingTape = new Paint();
-		maskingTape.setColor(Color.BLACK);
-		maskingTape.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-		
-		ArrayList<Bitmap> rv = new ArrayList<Bitmap>();
+		Bitmap[] images = new Bitmap[masks.length];
 		
 		for(int i = 0; i < masks.length; i++)
 		{
-			for(int j = 0; j < masks[i].length; j++)
-			{
-				int x = points[i][j].x - masks[i][j].getTopLeft().x;
-				int y = points[i][j].y - masks[i][j].getTopLeft().y;
-				
-				Bitmap temp = Bitmap.createBitmap(image, x, y, masks[i][j].getWidth(), masks[i][j].getHeight());
-				rv.add(temp);
-			}
+			int px = (i%puzzle_width)*pieceSize;
+			int py = (i%puzzle_height)*pieceSize;
+			
+			int pxm = px - masks[i].getTopLeft().x;
+			int pym = py -masks[i].getTopLeft().y;
+			
+			Bitmap store = Bitmap.createBitmap(pieceSize, pieceSize, null);
+			Canvas c = new Canvas(store);
+			c.drawBitmap(image, -px, -py, null);
+			Paint paint = new Paint();
+			paint.setColor(Color.BLACK);
+			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+			c.drawBitmap(masks[i].getMask(), pxm, pym, paint);
+			images[i] = store;
 		}
-		
-		return null;
+
+		return new Puzzle(images, puzzle_width);
 	}
-	
-	private Mask generateCorner(int width, int height)
+
+	/*
+	 * There are only 4 possible corner types, thus we simply generate a random
+	 * int from [0,4) and choose a corresponding corner.
+	 */
+	private Mask getRandomCorner()
 	{
-		Mask rv = null;
+		int which = RAN.nextInt(4);
+		Mask rv;
 
-		int start = ran.nextInt(4);
-
-		switch(start)
+		switch (which)
 		{
-			case 0: rv = new Mask(context, false, false, width, height); break;
-			case 1: rv = new Mask(context, true, false, width, height); break;
-			case 2: rv = new Mask(context, false, true, width, height); break;
-			case 3: rv = new Mask(context, true, true, width, height); break;
+			case 0:
+				rv = new Mask(context, false, false, difficulty);
+				break;
+			case 1:
+				rv = new Mask(context, false, true, difficulty);
+				break;
+			case 2:
+				rv = new Mask(context, true, false, difficulty);
+				break;
+			default:
+				rv = new Mask(context, true, true, difficulty);
+				break;
 		}
 
+		rv.rotate(1);
 		return rv;
+	}
+
+	/*
+	 * Corners are at the extremes of this puzzle. For example, if we have a
+	 * puzzle like:
+	 * ceeec Our width is 4 as is our height.
+	 * e+++e
+	 * e+++e Our first corner is at position 0 and 0%4 == 0.
+	 * e+++e
+	 * ceeec The second corner is at position 4 and 4%4 == 0.
+	 * The third corner is at position 20 and 20%4 == 0.
+	 * The final corner is at position 24 and 24%4 == 0.
+	 */
+	private boolean isCorner(int position, int puzzle_width, int puzzle_height)
+	{
+		return (position % puzzle_width == 0 && position % puzzle_height == 0);
+	}
+
+	/*
+	 * Edges are a generalize corner case, as a corner IS an edge, just an edge
+	 * on two sides. Thus only one of the conditions needs to be true.
+	 * Note that because a corner is a special cased edge, one should check to
+	 * see if it is a corner before checking for an edge.
+	 */
+	private boolean isEdge(int position, int puzzle_width, int puzzle_height)
+	{
+		return (position % puzzle_width == 0 || position % puzzle_height == 0);
 	}
 }
