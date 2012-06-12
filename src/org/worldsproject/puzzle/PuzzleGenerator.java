@@ -210,6 +210,6 @@ public class PuzzleGenerator
 		return (position > 0 && position < puzzle_width) ||
 				(position > (puzzle_height * (puzzle_width-1)) && position < (puzzle_width * puzzle_height)) || 
 				(position%puzzle_width == 0) ||
-				((position-1) % puzzle_width == 0);
+				((position) % puzzle_width == 9);
 	}
 }
