@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.util.Log;
 
 public class Mask
 {
@@ -206,9 +207,9 @@ public class Mask
 			append(top, name);
 			append(right, name);
 		}
-
+		
 		InputStream is = context.getResources().openRawResource(
-				resources.get(name));
+				resources.get(name.toString()));
 
 		return BitmapFactory.decodeStream(is);
 

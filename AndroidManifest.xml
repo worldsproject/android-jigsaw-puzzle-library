@@ -12,7 +12,7 @@
         android:label="@string/app_name" 
         android:theme="@style/Theme.HoloEverywhereDark">
         <activity
-            android:name="org.worldsproject.type_puzzle.PuzzleSelectActivity"
+            android:name=".PuzzleSolveActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

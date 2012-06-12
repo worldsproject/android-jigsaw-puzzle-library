@@ -1,5 +1,7 @@
 package org.worldsproject.puzzle;
 
+import org.worldsproject.puzzle.enums.Difficulty;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -14,7 +16,6 @@ import android.view.View;
 
 public class PuzzleView extends View implements OnGestureListener, OnDoubleTapListener
 {
-	private Resources r;
 	private Puzzle puzzle;
 	private GestureDetector gesture;
 	private Piece tapped;
@@ -24,7 +25,6 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 	public PuzzleView(Context context)
 	{
 		super(context);
-		r = context.getResources();
 
 		loadPuzzle();
 	}
@@ -32,7 +32,6 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 	public PuzzleView(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
-		r = context.getResources();
 
 		loadPuzzle();
 	}
@@ -40,7 +39,6 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 	public PuzzleView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
-		r = context.getResources();
 
 		loadPuzzle();
 	}
@@ -49,21 +47,25 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 	{
 		gesture = new GestureDetector(this.getContext(), this);
 
-		Bitmap[] monsters = {
-				BitmapFactory.decodeResource(r, R.drawable.monster1),
-				BitmapFactory.decodeResource(r, R.drawable.monster2),
-				BitmapFactory.decodeResource(r, R.drawable.monster3),
-				BitmapFactory.decodeResource(r, R.drawable.monster4),
-				BitmapFactory.decodeResource(r, R.drawable.monster5),
-				BitmapFactory.decodeResource(r, R.drawable.monster6),
-				BitmapFactory.decodeResource(r, R.drawable.monster7),
-				BitmapFactory.decodeResource(r, R.drawable.monster8),
-				BitmapFactory.decodeResource(r, R.drawable.monster9),
-				BitmapFactory.decodeResource(r, R.drawable.monster10),
-				BitmapFactory.decodeResource(r, R.drawable.monster11),
-				BitmapFactory.decodeResource(r, R.drawable.monster12), };
-
-		puzzle = new Puzzle(monsters, 4);
+//		Bitmap[] monsters = {
+//				BitmapFactory.decodeResource(r, R.drawable.monster1),
+//				BitmapFactory.decodeResource(r, R.drawable.monster2),
+//				BitmapFactory.decodeResource(r, R.drawable.monster3),
+//				BitmapFactory.decodeResource(r, R.drawable.monster4),
+//				BitmapFactory.decodeResource(r, R.drawable.monster5),
+//				BitmapFactory.decodeResource(r, R.drawable.monster6),
+//				BitmapFactory.decodeResource(r, R.drawable.monster7),
+//				BitmapFactory.decodeResource(r, R.drawable.monster8),
+//				BitmapFactory.decodeResource(r, R.drawable.monster9),
+//				BitmapFactory.decodeResource(r, R.drawable.monster10),
+//				BitmapFactory.decodeResource(r, R.drawable.monster11),
+//				BitmapFactory.decodeResource(r, R.drawable.monster12), };
+//
+//		puzzle = new Puzzle(monsters, 4);
+//		
+		Bitmap monster = BitmapFactory.decodeResource(this.getResources(), R.drawable.monster);
+		
+		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(monster, Difficulty.HARD);
 	}
 
 	@Override
@@ -175,13 +177,13 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 	{
 		if (tapped == null) // We aren't hitting a piece
 		{
-			puzzle.translate(distanceX, distanceY);
+			puzzle.translate(distanceX/scale, distanceY/scale);
 			
 			this.invalidate();
 		}
 		else
 		{
-			tapped.getGroup().translate((int) distanceX, (int) distanceY);
+			tapped.getGroup().translate((int) (distanceX/scale), (int) (distanceY/scale));
 
 			this.invalidate();
 		}

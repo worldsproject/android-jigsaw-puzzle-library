@@ -1,7 +1,4 @@
-package org.worldsproject.type_puzzle;
-
-import org.worldsproject.puzzle.PuzzleView;
-import org.worldsproject.puzzle.R;
+package org.worldsproject.puzzle;
 
 import android.app.Activity;
 import android.os.Bundle;

@@ -1,6 +1,9 @@
-package org.worldsproject.type_puzzle;
+package org.worldsproject.puzzle;
 
 import org.worldsproject.puzzle.R;
+import org.worldsproject.puzzle.R.drawable;
+import org.worldsproject.puzzle.R.id;
+import org.worldsproject.puzzle.R.layout;
 
 import android.app.Activity;
 import android.content.Context;

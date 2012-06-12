@@ -33,7 +33,7 @@ public class PuzzleGenerator
 		// Do we need to scale, and if so, by how much?
 		this.pieceSize = difficulty.pieceSize(difficulty);
 		this.difficulty = difficulty;
-		image = Bitmap.createScaledBitmap(image,
+		this.image = Bitmap.createScaledBitmap(image,
 				image.getWidth() + (image.getWidth() % pieceSize),
 				image.getHeight() + (image.getHeight() % pieceSize), false);
 
@@ -136,7 +136,8 @@ public class PuzzleGenerator
 			int pxm = px - masks[i].getTopLeft().x;
 			int pym = py -masks[i].getTopLeft().y;
 			
-			Bitmap store = Bitmap.createBitmap(pieceSize, pieceSize, null);
+			Bitmap store = Bitmap.createBitmap(pieceSize, pieceSize, Bitmap.Config.ARGB_8888);
+			
 			Canvas c = new Canvas(store);
 			c.drawBitmap(image, -px, -py, null);
 			Paint paint = new Paint();
