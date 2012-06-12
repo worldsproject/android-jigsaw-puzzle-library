@@ -96,14 +96,16 @@ public class PuzzleGenerator
 			//This is all of the top edge cases.
 			if(corner_number < 1)
 			{
+				Log.v("Corner", "Less than 1");
 				masks[i] = new Mask(context, RAN.nextBoolean(), RAN.nextBoolean(), masks[i-1].isRight(), difficulty);
 				masks[i].rotate(1);
 				continue;
 			}
 			
 			//This handles all of the bottom edge cases.
-			if(corner_number > 2)
+			if(corner_number >= 2)
 			{
+				Log.v("Corner", "Greater than 2");
 				masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), difficulty);
 				masks[i].rotate(3);
 				continue;
@@ -113,6 +115,7 @@ public class PuzzleGenerator
 			//and right edges, so we can safely toggle.
 			if(isEdge(i, puzzle_width, puzzle_height))
 			{
+				Log.v("Corner", "Corner is: " + corner_number);
 				if(left_edge)
 				{
 					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), RAN.nextBoolean(), difficulty);
@@ -205,7 +208,7 @@ public class PuzzleGenerator
 	private boolean isEdge(int position, int puzzle_width, int puzzle_height)
 	{
 		return (position > 0 && position < puzzle_width) ||
-				(position > (puzzle_height * (puzzle_width-1)) && position < (puzzle_width * puzzle_height)) ||
+				(position > (puzzle_height * (puzzle_width-1)) && position < (puzzle_width * puzzle_height)) || 
 				(position%puzzle_width == 0) ||
 				((position-1) % puzzle_width == 0);
 	}
