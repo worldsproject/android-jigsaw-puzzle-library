@@ -65,7 +65,7 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 //		
 		Bitmap monster = BitmapFactory.decodeResource(this.getResources(), R.drawable.monster);
 		
-		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(monster, Difficulty.HARD);
+		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(monster, Difficulty.EASY);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.util.Log;
 
 public class PuzzleGenerator
 {
@@ -128,23 +129,24 @@ public class PuzzleGenerator
 		
 		Bitmap[] images = new Bitmap[masks.length];
 		
-		for(int i = 0; i < masks.length; i++)
+		int position = 0;
+		for(int y = 0; y < this.image.getHeight(); y += this.pieceSize)
 		{
-			int px = (i%puzzle_width)*pieceSize;
-			int py = (i%puzzle_height)*pieceSize;
-			
-			int pxm = px - masks[i].getTopLeft().x;
-			int pym = py -masks[i].getTopLeft().y;
-			
-			Bitmap store = Bitmap.createBitmap(pieceSize, pieceSize, Bitmap.Config.ARGB_8888);
-			
-			Canvas c = new Canvas(store);
-			c.drawBitmap(image, -px, -py, null);
-			Paint paint = new Paint();
-			paint.setColor(Color.BLACK);
-			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-			c.drawBitmap(masks[i].getMask(), pxm, pym, paint);
-			images[i] = store;
+			for(int x = 0; x < this.image.getWidth(); x += this.pieceSize)
+			{
+				Bitmap store = Bitmap.createBitmap(pieceSize, pieceSize, Bitmap.Config.ARGB_8888);
+				
+				Canvas c = new Canvas(store);
+				c.drawBitmap(this.image, -x, -y, null);
+				Log.v("GEN", "[" + x + ", " + y + "]" );
+//				Paint paint = new Paint();
+//				paint.setColor(Color.BLACK);
+//				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+//				
+//				c.drawBitmap(masks[position].getMask(), masks[position].getTopLeft().x, masks[position].getTopLeft().y, paint);
+				images[position] = store;
+				position++;
+			}
 		}
 
 		return new Puzzle(images, puzzle_width);
