@@ -10,7 +10,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.util.Log;
 
 public class Mask
@@ -22,8 +21,6 @@ public class Mask
 	private boolean bottom;
 	private boolean left;
 
-	private Point topLeft;
-
 	private Type type;
 
 	private Bitmap mask;
@@ -31,12 +28,16 @@ public class Mask
 	private Context context;
 
 	private Difficulty difficulty;
+	
+	private int offset;
+	private static int position = 0;
 
 	public Mask(Context context, boolean top, boolean right,
 			Difficulty difficulty)
 	{
 		this(context, top, right, false, false, difficulty);
 		type = Type.CORNER;
+		mask = loadBitmap();
 	}
 
 	public Mask(Context context, boolean top, boolean right, boolean bottom,
@@ -44,6 +45,7 @@ public class Mask
 	{
 		this(context, top, right, bottom, false, difficulty);
 		type = Type.EDGE;
+		mask = loadBitmap();
 	}
 
 	public Mask(Context context, boolean top, boolean right, boolean bottom,
@@ -61,24 +63,20 @@ public class Mask
 		this.difficulty = difficulty;
 
 		fillResourceMapping();
-
-		mask = loadBitmap();
-
+		
 		// Here we have to account for all that transparent border.
 		// We should be making pieces off of the square area
 		// With overhangs going 'outside' the piece to make it look
 		// All puzzle like and pretty.
-		int offset = 0;
-
 		// Because the pieces have already been make, we know the offsets.
 		if (difficulty == Difficulty.EASY)
-			offset = 10;
+			this.offset = 10;
 		else if (difficulty == Difficulty.MEDIUM)
-			offset = 8;
+			this.offset = 8;
 		else
-			offset = 5;
-
-		topLeft = new Point(offset, offset);
+			this.offset = 5;
+		
+		mask = loadBitmap();
 	}
 
 	private void fillResourceMapping()
@@ -282,12 +280,13 @@ public class Mask
 
 	public Bitmap getMask()
 	{
+		Log.v("Mask", "Mask #" + position++ + "is " + this.getType());
 		return mask;
 	}
 
-	public Point getTopLeft()
+	public int getOffset()
 	{
-		return topLeft;
+		return offset;
 	}
 
 	public int getWidth()

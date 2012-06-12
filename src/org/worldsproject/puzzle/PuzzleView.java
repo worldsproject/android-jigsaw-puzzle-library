@@ -63,7 +63,7 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 //
 //		puzzle = new Puzzle(monsters, 4);
 //		
-		Bitmap monster = BitmapFactory.decodeResource(this.getResources(), R.drawable.monster);
+		Bitmap monster = BitmapFactory.decodeResource(this.getResources(), R.drawable.test);
 		
 		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(monster, Difficulty.EASY);
 	}
@@ -76,6 +76,7 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 		{
 			firstDraw = false;
 			puzzle.shuffle(this.getWidth(), this.getHeight());
+			puzzle.solve();
 		}
 		canvas.scale(scale, scale);
 		puzzle.draw(canvas);

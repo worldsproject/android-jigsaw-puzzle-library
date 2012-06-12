@@ -29,14 +29,14 @@ public class PuzzleGenerator
 		this.context = c;
 	}
 
-	public Puzzle generatePuzzle(Bitmap image, Difficulty difficulty)
+	public Puzzle generatePuzzle(Bitmap img, Difficulty difficulty)
 	{
 		// Do we need to scale, and if so, by how much?
 		this.pieceSize = difficulty.pieceSize(difficulty);
 		this.difficulty = difficulty;
-		this.image = Bitmap.createScaledBitmap(image,
-				image.getWidth() + (image.getWidth() % pieceSize),
-				image.getHeight() + (image.getHeight() % pieceSize), false);
+		this.image = Bitmap.createScaledBitmap(img,
+				img.getWidth() + (img.getWidth() % pieceSize),
+				img.getHeight() + (img.getHeight() % pieceSize), false);
 
 		// Now we need to get our width and height.
 		int puzzle_width = (this.image.getWidth() / this.pieceSize);
@@ -64,10 +64,15 @@ public class PuzzleGenerator
 		int corner_number = 0;
 		boolean left_edge = true;
 		
+		for(int i = 0; i < masks.length; i++)
+		{
+			Log.v("Edge Checking", "Edge at " + i +": " + this.isEdge(i, puzzle_width, puzzle_height));
+		}
+		
 		// We start at 1 because we already have our start point.
 		for (int i = 1; i < masks.length; i++)
 		{
-			if(isCorner(i, puzzle_width-1, puzzle_height-1))
+			if(isCorner(i, puzzle_width, puzzle_height))
 			{
 				corner_number++;
 				
@@ -76,23 +81,22 @@ public class PuzzleGenerator
 					masks[i] = new Mask(context, RAN.nextBoolean(), !masks[i-1].isRight(), difficulty);
 					masks[i].rotate(2);
 				}
-				else if(corner_number == 2)
+				else if(corner_number == 2) 
 				{
 					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), difficulty);
 				}
 				else
 				{
 					masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), difficulty);
-					masks[i].rotate(3);
+					masks[i].rotate(3); 
 				}
-				
 				continue;
 			}
 			
 			//This is all of the top edge cases.
 			if(corner_number < 1)
 			{
-				masks[i] = new Mask(context, RAN.nextBoolean(), RAN.nextBoolean(), !masks[i-1].isRight(), difficulty);
+				masks[i] = new Mask(context, RAN.nextBoolean(), RAN.nextBoolean(), masks[i-1].isRight(), difficulty);
 				masks[i].rotate(1);
 				continue;
 			}
@@ -107,7 +111,7 @@ public class PuzzleGenerator
 			
 			//Now the only possible edge that we could have reached so far are the left
 			//and right edges, so we can safely toggle.
-			if(isEdge(i, puzzle_width-1, puzzle_height-1))
+			if(isEdge(i, puzzle_width, puzzle_height))
 			{
 				if(left_edge)
 				{
@@ -124,32 +128,33 @@ public class PuzzleGenerator
 			}
 			
 			//The only possible option now are the full pieces.
-			masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), RAN.nextBoolean(), masks[i-1].isLeft(), difficulty);
+			masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), RAN.nextBoolean(), !masks[i-1].isLeft(), difficulty);
 		}
 		
 		Bitmap[] images = new Bitmap[masks.length];
-		
+		Bitmap unmutable = this.image.copy(this.image.getConfig(), false);
 		int position = 0;
+		int offset = masks[0].getOffset();
 		for(int y = 0; y < this.image.getHeight(); y += this.pieceSize)
 		{
 			for(int x = 0; x < this.image.getWidth(); x += this.pieceSize)
 			{
-				Bitmap store = Bitmap.createBitmap(pieceSize, pieceSize, Bitmap.Config.ARGB_8888);
+				Bitmap store = Bitmap.createBitmap(pieceSize+(2*offset), pieceSize+(2*offset), Bitmap.Config.ARGB_8888);
 				
 				Canvas c = new Canvas(store);
-				c.drawBitmap(this.image, -x, -y, null);
-				Log.v("GEN", "[" + x + ", " + y + "]" );
-//				Paint paint = new Paint();
-//				paint.setColor(Color.BLACK);
-//				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-//				
-//				c.drawBitmap(masks[position].getMask(), masks[position].getTopLeft().x, masks[position].getTopLeft().y, paint);
+				
+				c.drawBitmap(unmutable, -x, -y, null);
+
+				Paint paint = new Paint();
+				paint.setColor(Color.BLACK);
+				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+				
+				c.drawBitmap(masks[position].getMask(), 0, 0, paint);
 				images[position] = store;
 				position++;
 			}
 		}
-
-		return new Puzzle(images, puzzle_width);
+		return new Puzzle(images, puzzle_width); 
 	}
 
 	/*
@@ -160,7 +165,7 @@ public class PuzzleGenerator
 	{
 		int which = RAN.nextInt(4);
 		Mask rv;
-
+		
 		switch (which)
 		{
 			case 0:
@@ -182,19 +187,13 @@ public class PuzzleGenerator
 	}
 
 	/*
-	 * Corners are at the extremes of this puzzle. For example, if we have a
-	 * puzzle like:
-	 * ceeec Our width is 4 as is our height.
-	 * e+++e
-	 * e+++e Our first corner is at position 0 and 0%4 == 0.
-	 * e+++e
-	 * ceeec The second corner is at position 4 and 4%4 == 0.
-	 * The third corner is at position 20 and 20%4 == 0.
-	 * The final corner is at position 24 and 24%4 == 0.
+	 * The 4 possible corners are 0, (puzzle_width * puzzle_height)-1,
+	 * 0 + puzzle_width-1, (puzzle_height*puzzle_width-1) 
 	 */
 	private boolean isCorner(int position, int puzzle_width, int puzzle_height)
 	{
-		return (position % puzzle_width == 0 && position % puzzle_height == 0);
+		return (position == 0 || position == puzzle_width-1 || 
+				position == (puzzle_width*puzzle_height)-1 || position == puzzle_height * (puzzle_width-1));
 	}
 
 	/*
@@ -205,6 +204,9 @@ public class PuzzleGenerator
 	 */
 	private boolean isEdge(int position, int puzzle_width, int puzzle_height)
 	{
-		return (position % puzzle_width == 0 || position % puzzle_height == 0);
+		return (position > 0 && position < puzzle_width) ||
+				(position > (puzzle_height * (puzzle_width-1)) && position < (puzzle_width * puzzle_height)) ||
+				(position%puzzle_width == 0) ||
+				((position-1) % puzzle_width == 0);
 	}
 }
