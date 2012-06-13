@@ -51,7 +51,7 @@ public class PuzzleGenerator
 		// We should start by generating a corner.
 		Mask startPoint = getRandomCorner();
 		masks[0] = startPoint;
-
+		
 		// We need some flags. Because we are iterating through in a predictable
 		// manner, it will be easy to know which edge and corner we are on.
 		//
@@ -78,16 +78,16 @@ public class PuzzleGenerator
 				
 				if(corner_number == 1)
 				{
-					masks[i] = new Mask(context, RAN.nextBoolean(), !masks[i-1].isRight(), difficulty);
+					masks[i] = new Mask(context, RB(), !masks[i-1].isRight(), difficulty);
 					masks[i].rotate(2);
 				}
 				else if(corner_number == 2) 
 				{
-					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), difficulty);
+					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RB(), difficulty);
 				}
 				else
 				{
-					masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), difficulty);
+					masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), difficulty); 
 					masks[i].rotate(3); 
 				}
 				continue;
@@ -96,8 +96,7 @@ public class PuzzleGenerator
 			//This is all of the top edge cases.
 			if(corner_number < 1)
 			{
-				Log.v("Corner", "Less than 1");
-				masks[i] = new Mask(context, RAN.nextBoolean(), RAN.nextBoolean(), masks[i-1].isRight(), difficulty);
+				masks[i] = new Mask(context, RB(), RB(), !masks[i-1].isRight(), difficulty);
 				masks[i].rotate(1);
 				continue;
 			}
@@ -105,24 +104,22 @@ public class PuzzleGenerator
 			//This handles all of the bottom edge cases.
 			if(corner_number >= 2)
 			{
-				Log.v("Corner", "Greater than 2");
-				masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), difficulty);
+				masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), RB(), difficulty);
 				masks[i].rotate(3);
 				continue;
 			}
 			
 			//Now the only possible edge that we could have reached so far are the left
 			//and right edges, so we can safely toggle.
-			if(isEdge(i, puzzle_width, puzzle_height))
+			if(isEdge(i, puzzle_width, puzzle_height)) 
 			{
-				Log.v("Corner", "Corner is: " + corner_number);
-				if(left_edge)
+				if(left_edge) 
 				{
-					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), RAN.nextBoolean(), difficulty);
+					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RB(), RB(), difficulty);
 				}
 				else
 				{
-					masks[i] = new Mask(context, RAN.nextBoolean(), !masks[i-1].isLeft(), !masks[i-puzzle_width].isBottom(), difficulty);
+					masks[i] = new Mask(context, RB(), !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), difficulty);
 					masks[i].rotate(2);
 				}
 				
@@ -131,11 +128,10 @@ public class PuzzleGenerator
 			}
 			
 			//The only possible option now are the full pieces.
-			masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RAN.nextBoolean(), RAN.nextBoolean(), !masks[i-1].isLeft(), difficulty);
+			masks[i] = new Mask(context, !(masks[i-puzzle_width].isBottom()), RB(), RB(), !(masks[i-1].isRight()), difficulty);
 		}
 		
 		Bitmap[] images = new Bitmap[masks.length];
-		Bitmap unmutable = this.image.copy(this.image.getConfig(), false);
 		int position = 0;
 		int offset = masks[0].getOffset();
 		for(int y = 0; y < this.image.getHeight(); y += this.pieceSize)
@@ -146,7 +142,7 @@ public class PuzzleGenerator
 				
 				Canvas c = new Canvas(store);
 				
-				c.drawBitmap(unmutable, -x, -y, null);
+				c.drawBitmap(this.image, -x+offset, -y+offset, null);
 
 				Paint paint = new Paint();
 				paint.setColor(Color.BLACK);
@@ -210,6 +206,11 @@ public class PuzzleGenerator
 		return (position > 0 && position < puzzle_width) ||
 				(position > (puzzle_height * (puzzle_width-1)) && position < (puzzle_width * puzzle_height)) || 
 				(position%puzzle_width == 0) ||
-				((position) % puzzle_width == 9);
+				((position+1) % puzzle_width == 0);
+	}
+	
+	private boolean RB()
+	{
+		return RAN.nextBoolean();
 	}
 }

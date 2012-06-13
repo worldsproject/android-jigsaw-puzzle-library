@@ -30,7 +30,6 @@ public class Mask
 	private Difficulty difficulty;
 	
 	private int offset;
-	private static int position = 0;
 
 	public Mask(Context context, boolean top, boolean right,
 			Difficulty difficulty)
@@ -208,7 +207,7 @@ public class Mask
 		
 		InputStream is = context.getResources().openRawResource(
 				resources.get(name.toString()));
-
+		
 		return BitmapFactory.decodeStream(is);
 
 	}
@@ -280,7 +279,6 @@ public class Mask
 
 	public Bitmap getMask()
 	{
-		Log.v("Mask", "Mask #" + position++ + "is " + this.getType());
 		return mask;
 	}
 
