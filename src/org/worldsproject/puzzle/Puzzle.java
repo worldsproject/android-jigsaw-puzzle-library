@@ -3,6 +3,8 @@ package org.worldsproject.puzzle;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.worldsproject.puzzle.enums.Difficulty;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
@@ -14,14 +16,14 @@ public class Puzzle
 	private int piece_width;
 	private int piece_height;
 
-	public Puzzle(Bitmap[] images, int width)
+	public Puzzle(Bitmap[] images, int width, Difficulty d)
 	{
 		piece_width = images[0].getWidth();
 		piece_height = images[0].getHeight();
 
 		for (int i = 0; i < images.length; i++)
 		{
-			pieces.add(new Piece(images[i]));
+			pieces.add(new Piece(images[i], d.getOffset()));
 		}
  
 		for (int i = 0; i < pieces.size(); i++)

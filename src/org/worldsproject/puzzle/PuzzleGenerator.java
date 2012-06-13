@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.util.Log;
 
 public class PuzzleGenerator
 {
@@ -32,7 +31,7 @@ public class PuzzleGenerator
 	public Puzzle generatePuzzle(Bitmap img, Difficulty difficulty)
 	{
 		// Do we need to scale, and if so, by how much?
-		this.pieceSize = difficulty.pieceSize(difficulty);
+		this.pieceSize = difficulty.pieceSize();
 		this.difficulty = difficulty;
 		this.image = Bitmap.createScaledBitmap(img,
 				img.getWidth() + (img.getWidth() % pieceSize),
@@ -64,11 +63,6 @@ public class PuzzleGenerator
 		int corner_number = 0;
 		boolean left_edge = true;
 		
-		for(int i = 0; i < masks.length; i++)
-		{
-			Log.v("Edge Checking", "Edge at " + i +": " + this.isEdge(i, puzzle_width, puzzle_height));
-		}
-		
 		// We start at 1 because we already have our start point.
 		for (int i = 1; i < masks.length; i++)
 		{
@@ -85,7 +79,7 @@ public class PuzzleGenerator
 				{
 					masks[i] = new Mask(context, !masks[i-puzzle_width].isBottom(), RB(), difficulty);
 				}
-				else
+				else if(corner_number == 3)
 				{
 					masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), difficulty); 
 					masks[i].rotate(3); 
@@ -98,11 +92,11 @@ public class PuzzleGenerator
 			{
 				masks[i] = new Mask(context, RB(), RB(), !masks[i-1].isRight(), difficulty);
 				masks[i].rotate(1);
-				continue;
+				continue; 
 			}
 			
 			//This handles all of the bottom edge cases.
-			if(corner_number >= 2)
+			if(corner_number == 2)
 			{
 				masks[i] = new Mask(context, !masks[i-1].isRight(), !masks[i-puzzle_width].isBottom(), RB(), difficulty);
 				masks[i].rotate(3);
@@ -149,11 +143,12 @@ public class PuzzleGenerator
 				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 				
 				c.drawBitmap(masks[position].getMask(), 0, 0, paint);
+				
 				images[position] = store;
 				position++;
 			}
 		}
-		return new Puzzle(images, puzzle_width); 
+		return new Puzzle(images, puzzle_width, difficulty); 
 	}
 
 	/*
@@ -192,7 +187,7 @@ public class PuzzleGenerator
 	private boolean isCorner(int position, int puzzle_width, int puzzle_height)
 	{
 		return (position == 0 || position == puzzle_width-1 || 
-				position == (puzzle_width*puzzle_height)-1 || position == puzzle_height * (puzzle_width-1));
+				position == (puzzle_width*puzzle_height)-1 || position == (puzzle_height * puzzle_width)-puzzle_width);
 	}
 
 	/*

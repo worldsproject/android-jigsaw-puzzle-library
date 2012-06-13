@@ -19,6 +19,7 @@ public class Piece
 	private Bitmap original;
 	private Bitmap display;
 
+	private int offset = 0;
 	/*
 	 * 0 is the correct orientation.
 	 * 1 is 90 degrees turned clockwise.
@@ -27,10 +28,11 @@ public class Piece
 	 */
 	private int orientation = 0;
 	
-	public Piece(Bitmap image)
+	public Piece(Bitmap image, int offset)
 	{
 		this.original = image;
 		this.display = image;
+		this.offset = offset;
 		this.group = new PuzzleGroup();
 		this.group.addPiece(this);
 	}
@@ -202,28 +204,28 @@ public class Piece
 		{
 			int mx = x - p.getX();
 			int my = y - (p.getY() + p.getHeight());
-			group.translate(mx, my);
+			group.translate(mx, my+(offset*2));
 		}
 
 		if (p == this.right)
 		{
 			int mx = x - (p.getX() - this.getWidth());
 			int my = y - p.getY();
-			group.translate(mx, my);
+			group.translate(mx-(offset*2), my);
 		}
 
 		if (p == this.bottom)
 		{
 			int mx = x - p.getX();
 			int my = y - (p.getY() - this.getHeight());
-			group.translate(mx, my);
+			group.translate(mx, my-(offset*2));
 		}
 
 		if (p == this.left)
 		{
 			int mx = x - (p.getX() + p.getWidth());
 			int my = y - p.getY();
-			group.translate(mx, my);
+			group.translate(mx+(offset*2), my); 
 		}
 		
 		this.group.addGroup(p.getGroup());
