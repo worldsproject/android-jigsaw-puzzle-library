@@ -33,10 +33,18 @@ public class PuzzleGenerator
 		// Do we need to scale, and if so, by how much?
 		this.pieceSize = difficulty.pieceSize();
 		this.difficulty = difficulty;
-		this.image = Bitmap.createScaledBitmap(img,
-				img.getWidth() + (img.getWidth() % pieceSize),
-				img.getHeight() + (img.getHeight() % pieceSize), false);
+		
+		int wid = img.getWidth() % pieceSize;
+		int hei = img.getHeight() % pieceSize;
+		
+		if((img.getWidth() + wid)%pieceSize != 0)
+			wid *= -1;
+		if((img.getHeight() + hei)%64 != 0)
+			hei *= -1;
 
+		this.image = Bitmap.createScaledBitmap(img,
+				img.getWidth() + wid,
+				img.getHeight() + hei, false);
 		// Now we need to get our width and height.
 		int puzzle_width = (this.image.getWidth() / this.pieceSize);
 		int puzzle_height = (this.image.getHeight() / this.pieceSize);
