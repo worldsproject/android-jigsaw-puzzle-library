@@ -3,7 +3,6 @@ package org.worldsproject.puzzle;
 import org.worldsproject.puzzle.enums.Difficulty;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;

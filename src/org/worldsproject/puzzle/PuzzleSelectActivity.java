@@ -3,24 +3,24 @@ package org.worldsproject.puzzle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
 public class PuzzleSelectActivity extends Activity
 {
 	private ImageView selected;
+	private Button button;
+	
 	private int image;
-	private String difficulty;
+	private String difficulty = "easy";
 	private Intent intent;
 	
 	@Override
@@ -61,20 +61,41 @@ public class PuzzleSelectActivity extends Activity
 		
 		selected.setOnClickListener(new OnClickListener()
 		{
-
 			@Override
 			public void onClick(View v)
 			{
 				intent.putExtra("image", image);
-				intent.putExtra("difficulty", "easy");
-				Log.v("Select", "Image: " +image);
-				Log.v("Select", "Difficulty: " + difficulty); 
-				Log.v("Select", "Before Start");
+				intent.putExtra("difficulty", difficulty);
 				PuzzleSelectActivity.this.startActivity(intent);
-				Log.v("Select", "After Start");
 			}
 			
 		}); 
+		
+		button = (Button)findViewById(R.id.difficulty);
+		
+		button.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if(difficulty.equals("easy"))
+				{
+					difficulty = "medium";
+					button.setText(R.string.medium);
+				}
+				else if(difficulty.equals("medium"))
+				{
+					difficulty = "hard";
+					button.setText(R.string.hard);
+				}
+				else
+				{
+					difficulty = "easy";
+					button.setText(R.string.easy);
+				}
+			}
+			
+		});
 	}
 
 	private class ImageAdapter extends BaseAdapter
