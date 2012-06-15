@@ -1,27 +1,28 @@
 package org.worldsproject.puzzle;
 
-import org.worldsproject.puzzle.R;
-import org.worldsproject.puzzle.R.drawable;
-import org.worldsproject.puzzle.R.id;
-import org.worldsproject.puzzle.R.layout;
-
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class PuzzleSelectActivity extends Activity
 {
-	ImageView selected;
+	private ImageView selected;
+	private int image;
+	private String difficulty;
+	private Intent intent;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -33,16 +34,6 @@ public class PuzzleSelectActivity extends Activity
 		
 		selected = (ImageView) findViewById(R.id.imageView);
 
-		gallery.setOnItemClickListener(new OnItemClickListener()
-		{
-			public void onItemClick(AdapterView<?> parent, View v,
-					int position, long id)
-			{
-				Toast.makeText(PuzzleSelectActivity.this, "" + position,
-						Toast.LENGTH_SHORT).show();
-			}
-		});
-
 		gallery.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 
@@ -50,9 +41,9 @@ public class PuzzleSelectActivity extends Activity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3)
 			{
-				Log.v("PuzzleSelectActivity", "Image Selected");
 				ImageAdapter ia = (ImageAdapter)arg0.getAdapter();
-				selected.setImageDrawable(getResources().getDrawable((Integer)ia.getItem(arg2)));
+				image = (int)ia.getItemId(arg2);
+				selected.setImageDrawable(getResources().getDrawable(image));
 			}
 
 			@Override
@@ -60,6 +51,30 @@ public class PuzzleSelectActivity extends Activity
 			{
 			}
 		});
+		
+		CharSequence[] options = new CharSequence[3];
+		options[0] = getResources().getText(R.string.easy);
+		options[1] = getResources().getText(R.string.medium);
+		options[2] = getResources().getText(R.string.hard);
+		
+		intent = new Intent(this, PuzzleSolveActivity.class);
+		
+		selected.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				intent.putExtra("image", image);
+				intent.putExtra("difficulty", "easy");
+				Log.v("Select", "Image: " +image);
+				Log.v("Select", "Difficulty: " + difficulty); 
+				Log.v("Select", "Before Start");
+				PuzzleSelectActivity.this.startActivity(intent);
+				Log.v("Select", "After Start");
+			}
+			
+		}); 
 	}
 
 	private class ImageAdapter extends BaseAdapter
@@ -88,7 +103,7 @@ public class PuzzleSelectActivity extends Activity
 
 		public long getItemId(int position)
 		{
-			return position;
+			return mImageIds[position];
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent)

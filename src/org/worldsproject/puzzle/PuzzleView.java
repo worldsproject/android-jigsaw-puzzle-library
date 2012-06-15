@@ -3,9 +3,8 @@ package org.worldsproject.puzzle;
 import org.worldsproject.puzzle.enums.Difficulty;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -25,47 +24,23 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 	public PuzzleView(Context context)
 	{
 		super(context);
-
-		loadPuzzle();
 	}
 
 	public PuzzleView(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
-
-		loadPuzzle();
 	}
 
 	public PuzzleView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
-
-		loadPuzzle();
 	}
 
-	private void loadPuzzle()
+	public void loadPuzzle(Bitmap image, Difficulty difficulty)
 	{
 		gesture = new GestureDetector(this.getContext(), this);
-
-//		Bitmap[] monsters = {
-//				BitmapFactory.decodeResource(r, R.drawable.monster1),
-//				BitmapFactory.decodeResource(r, R.drawable.monster2),
-//				BitmapFactory.decodeResource(r, R.drawable.monster3),
-//				BitmapFactory.decodeResource(r, R.drawable.monster4),
-//				BitmapFactory.decodeResource(r, R.drawable.monster5),
-//				BitmapFactory.decodeResource(r, R.drawable.monster6),
-//				BitmapFactory.decodeResource(r, R.drawable.monster7),
-//				BitmapFactory.decodeResource(r, R.drawable.monster8),
-//				BitmapFactory.decodeResource(r, R.drawable.monster9),
-//				BitmapFactory.decodeResource(r, R.drawable.monster10),
-//				BitmapFactory.decodeResource(r, R.drawable.monster11),
-//				BitmapFactory.decodeResource(r, R.drawable.monster12), };
-//
-//		puzzle = new Puzzle(monsters, 4);
-//		
-		Bitmap monster = BitmapFactory.decodeResource(this.getResources(), R.drawable.monster);
 		
-		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(monster, Difficulty.EASY);
+		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(image, difficulty);
 	}
 
 	@Override
@@ -76,7 +51,6 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 		{
 			firstDraw = false;
 			puzzle.shuffle(this.getWidth(), this.getHeight());
-			puzzle.solve();
 		}
 		canvas.scale(scale, scale);
 		puzzle.draw(canvas);

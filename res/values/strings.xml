@@ -6,5 +6,8 @@
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
     <string name="image_description">Puzzle to be completed.</string>
+    <string name="easy">Easy</string>
+    <string name="hard">Hard</string>
+    <string name="medium">Medium</string>
 
 </resources>
