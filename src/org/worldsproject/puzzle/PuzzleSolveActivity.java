@@ -63,4 +63,20 @@ public class PuzzleSolveActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.solve);
 	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle b)
+	{
+		super.onSaveInstanceState(b);
+		b.putIntArray("x", pv.getXPieces());
+		b.putIntArray("y", pv.getYPieces());
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle b)
+	{
+		super.onRestoreInstanceState(b);
+		
+		pv.setPieces(b.getIntArray("x"), b.getIntArray("y"));
+	}
 }

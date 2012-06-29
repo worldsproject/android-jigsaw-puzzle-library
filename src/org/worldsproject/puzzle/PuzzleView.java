@@ -1,5 +1,7 @@
 package org.worldsproject.puzzle;
 
+import java.util.ArrayList;
+
 import org.worldsproject.puzzle.enums.Difficulty;
 
 import android.content.Context;
@@ -225,5 +227,42 @@ public class PuzzleView extends View implements OnGestureListener, OnDoubleTapLi
 	{
 		scale -= 0.1;
 		this.invalidate();
+	}
+	
+	public int[] getXPieces()
+	{
+		ArrayList<Piece> pieces = puzzle.getPieces();
+		int[] rv = new int[pieces.size()];
+		
+		for(int i = 0; i < pieces.size(); i++)
+		{
+			rv[i] = pieces.get(i).getX();
+		}
+		
+		return rv;
+	}
+	
+	public int[] getYPieces()
+	{
+		ArrayList<Piece> pieces = puzzle.getPieces();
+		int[] rv = new int[pieces.size()];
+		
+		for(int i = 0; i < pieces.size(); i++)
+		{
+			rv[i] = pieces.get(i).getY();
+		}
+		
+		return rv;
+	}
+	
+	public void setPieces(int[] xp, int[] yp)
+	{
+		ArrayList<Piece> pieces = puzzle.getPieces();
+		
+		for(int i = 0; i < pieces.size(); i++)
+		{
+			pieces.get(i).setX(yp[i]);
+			pieces.get(i).setY(yp[i]);
+		}
 	}
 }

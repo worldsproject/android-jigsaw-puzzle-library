@@ -4,6 +4,9 @@ import java.util.HashSet;
 
 public class PuzzleGroup
 {
+	private static int idSource = 0;
+	private final int serial = ++idSource;
+	
 	private HashSet<Piece> group = new HashSet<Piece>();
 	
 	public PuzzleGroup(){}
@@ -38,6 +41,11 @@ public class PuzzleGroup
 	
 	public boolean sameGroup(Piece a, Piece b)
 	{
-		return group.contains(a) && group.contains(b);
+		return a.getGroup().getSerial() == b.getGroup().getSerial();
+	}
+	
+	public int getSerial()
+	{
+		return serial;
 	}
 }
