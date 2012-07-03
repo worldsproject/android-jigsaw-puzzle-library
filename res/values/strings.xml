@@ -9,5 +9,6 @@
     <string name="easy">Easy</string>
     <string name="hard">Hard</string>
     <string name="medium">Medium</string>
+    <string name="sdcard_error">Your SD card seems to be unavailable and your puzzle progress may not save correctly.</string>
 
 </resources>

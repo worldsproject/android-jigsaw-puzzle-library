@@ -1,14 +1,15 @@
 package org.worldsproject.puzzle;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,27 +17,37 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.worldsproject.puzzle.enums.Difficulty;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 public class Puzzle {
 	private static final Random RAN = new Random();
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
-	private int piece_width;
-	private int piece_height;
+	private int width;
+	private boolean initialSave = true;
 
-	public Puzzle(Bitmap[] images, int width, Difficulty d) {
-		piece_width = images[0].getWidth();
-		piece_height = images[0].getHeight();
+	public Puzzle(String location) {
+		int width = this.loadPuzzle(location);
+		this.width = width;
+		this.findNeighbors(width);
+	}
 
+	public Puzzle(Bitmap[] images, String location, int width, Difficulty d) {
 		for (int i = 0; i < images.length; i++) {
 			pieces.add(new Piece(images[i], d.getOffset()));
 		}
+		this.width = width;
+		findNeighbors(width);
+	}
 
-		//Here we calculate all of the neighbors of each piece.
+	private void findNeighbors(int width) {
+		// Here we calculate all of the neighbors of each piece.
 		for (int i = 0; i < pieces.size(); i++) {
 			// Top
 			if (i - width >= 0) {
@@ -58,8 +69,8 @@ public class Puzzle {
 	}
 
 	public void shuffle(int display_width, int display_height) {
-		int maxX = display_width - piece_width;
-		int maxY = display_height - piece_height;
+		int maxX = display_width - 20;
+		int maxY = display_height - 20;
 
 		for (Piece p : this.pieces) {
 			p.setX(RAN.nextInt(maxX));
@@ -91,9 +102,17 @@ public class Puzzle {
 		}
 	}
 
-	public void savePuzzle(String location) {
+	public void savePuzzle(Context context, String location) {
+		Log.v("In", "Saving...");
+		if (Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED) == false) {
+			(Toast.makeText(context, R.string.sdcard_error, Toast.LENGTH_LONG))
+					.show();
+			return;
+		}
 		JSONArray array = new JSONArray();
 		array.put(this.pieces.get(0).getOffset());
+		array.put(this.width);
 
 		for (Piece p : this.pieces) {
 			JSONObject obj = new JSONObject();
@@ -111,22 +130,21 @@ public class Puzzle {
 
 			array.put(obj);
 
-			try {
-				FileOutputStream out = new FileOutputStream(location
-						+ p.getSerial() + ".png");
-				File checkExists = new File(location + p.getSerial() + ".png");
-
-				if (checkExists.exists() == false)
-					p.getOriginal()
-							.compress(Bitmap.CompressFormat.PNG, 90, out);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+			if (initialSave) {
+				writeImages(location, p);
 			}
 		}
-
+		
+		initialSave = false;
+		
 		String puzzleData = array.toString();
 		PrintWriter output = null;
-
+		try {
+			Log.v("JSONOUT", array.toString(2));
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			output = new PrintWriter(new File(location + "puzzle_data.txt"));
 		} catch (FileNotFoundException e) {
@@ -135,54 +153,77 @@ public class Puzzle {
 		}
 
 		output.write(puzzleData);
+
+		output.close();
 	}
 
-	public void loadPuzzle(String location) throws FileNotFoundException {
+	private void writeImages(String location, Piece p) {
+		try {
+			File checkExists = new File(location + p.getSerial() + ".png");
+
+			if (checkExists.exists() == false) {
+				(new File(location)).mkdirs();
+				checkExists.createNewFile();
+
+				FileOutputStream out = new FileOutputStream(location
+						+ p.getSerial() + ".png");
+
+				p.getOriginal().compress(Bitmap.CompressFormat.PNG, 90, out);
+			}
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public int loadPuzzle(String location) {
 		this.pieces.clear();
 
 		File levelFile = new File(location + "puzzle_data.txt");
+		String r = "READ";
+		Log.v(r, "File Exists: " + levelFile.exists());
 
-		Scanner scan = new Scanner(levelFile);
-
-		String levelText = scan.next();
-
-		JSONTokener parser = new JSONTokener(levelText);
-		int offset = 0;
+		StringBuilder text = new StringBuilder();
 
 		try {
-			offset = (Integer) parser.nextValue();
+			BufferedReader br = new BufferedReader(new FileReader(levelFile));
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				text.append(line);
+			}
+		} catch (IOException e) {
+			// You'll need to add proper error handling here
+		}
+
+		String levelText = text.toString();
+		Log.v("JSONIN", levelText);
+		JSONTokener parser = new JSONTokener(levelText);
+
+		JSONArray items;
+		try {
+			items = (JSONArray) parser.nextValue();
 		} catch (JSONException e) {
-			// The only way this happens is if the textfile has been modified so
-			// that the offset isn't the first value.
 			throw new RuntimeException(e);
 		}
 
+		int offset = items.optInt(0);
+		int width = items.optInt(1);
+
 		HashMap<Integer, PuzzleGroup> groupMap = new HashMap<Integer, PuzzleGroup>();
+		Log.v("Input", "Length of JSONArray: " + items.length());
+		for (int i = 2; i < items.length(); i++) {
+			JSONObject piece = items.optJSONObject(i);
 
-		while (parser.more()) {
-			JSONObject piece;
-
-			try {
-				piece = (JSONObject) parser.nextValue();
-			} catch (JSONException e) {
-				// The only way this happens is if the text file has been
-				// modified. Nothing we can do but crash.
-				throw new RuntimeException(e);
-			}
 			int x;
 			int y;
 			int groupID;
 			int serial;
 
-			try {
-				x = piece.getInt("x");
-				y = piece.getInt("y");
-				groupID = piece.getInt("g");
-				serial = piece.getInt("s");
-			} catch (JSONException e) {
-				// See above.
-				throw new RuntimeException(e);
-			}
+			x = piece.optInt("x");
+			y = piece.optInt("y");
+			groupID = piece.optInt("g");
+			serial = piece.optInt("s");
 
 			Bitmap pieceImage = BitmapFactory.decodeFile(location + serial
 					+ ".png");
@@ -192,14 +233,16 @@ public class Puzzle {
 			p.setY(y);
 
 			PuzzleGroup group = groupMap.get(groupID);
-			
+
 			if (group == null) {
 				group = new PuzzleGroup();
 				groupMap.put(groupID, group);
 			}
-			
+
 			p.setGroup(group);
 			this.pieces.add(p);
 		}
+
+		return width;
 	}
 }

@@ -28,7 +28,7 @@ public class PuzzleGenerator
 		this.context = c;
 	}
 
-	public Puzzle generatePuzzle(Bitmap img, Difficulty difficulty)
+	public Puzzle generatePuzzle(Bitmap img, Difficulty difficulty, String location)
 	{
 		// Do we need to scale, and if so, by how much?
 		this.pieceSize = difficulty.pieceSize();
@@ -156,7 +156,7 @@ public class PuzzleGenerator
 				position++;
 			}
 		}
-		return new Puzzle(images, puzzle_width, difficulty); 
+		return new Puzzle(images, location, puzzle_width, difficulty); 
 	}
 
 	/*

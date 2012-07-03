@@ -4,8 +4,10 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-sdk
-        android:minSdkVersion="4"
+        android:minSdkVersion="8"
         android:targetSdkVersion="11" />
 
     <application
@@ -24,4 +26,5 @@
         <activity android:name=".PuzzleSolveActivity" >
         </activity>
     </application>
+
 </manifest>
