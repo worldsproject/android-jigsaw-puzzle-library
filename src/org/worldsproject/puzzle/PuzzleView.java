@@ -92,6 +92,7 @@ public class PuzzleView extends View implements OnGestureListener,
 		// Get the piece that is under this tap.
 		Piece possibleNewTapped = null;
 		boolean shouldPan = true;
+
 		for (Piece p : this.puzzle.getPieces()) {
 			if (p.inMe((int) (e1.getX() / scale), (int) (e1.getY() / scale))) {
 				if (p == tapped) {
@@ -133,17 +134,14 @@ public class PuzzleView extends View implements OnGestureListener,
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
-		if (tapped == null) // We aren't hitting a piece
-		{
+		if (tapped == null) {// We aren't hitting a piece
 			puzzle.translate(distanceX / scale, distanceY / scale);
-
-			this.invalidate();
 		} else {
 			tapped.getGroup().translate((int) (distanceX / scale),
 					(int) (distanceY / scale));
-
-			this.invalidate();
 		}
+
+		this.invalidate();
 		return true;
 	}
 
@@ -198,36 +196,5 @@ public class PuzzleView extends View implements OnGestureListener,
 	public void zoomOut() {
 		scale -= 0.1;
 		this.invalidate();
-	}
-
-	public int[] getXPieces() {
-		ArrayList<Piece> pieces = puzzle.getPieces();
-		int[] rv = new int[pieces.size()];
-
-		for (int i = 0; i < pieces.size(); i++) {
-			rv[i] = pieces.get(i).getX();
-		}
-
-		return rv;
-	}
-
-	public int[] getYPieces() {
-		ArrayList<Piece> pieces = puzzle.getPieces();
-		int[] rv = new int[pieces.size()];
-
-		for (int i = 0; i < pieces.size(); i++) {
-			rv[i] = pieces.get(i).getY();
-		}
-
-		return rv;
-	}
-
-	public void setPieces(int[] xp, int[] yp) {
-		ArrayList<Piece> pieces = puzzle.getPieces();
-
-		for (int i = 0; i < pieces.size(); i++) {
-			pieces.get(i).setX(yp[i]);
-			pieces.get(i).setY(yp[i]);
-		}
 	}
 }

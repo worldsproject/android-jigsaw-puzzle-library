@@ -22,7 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 public class Puzzle {
@@ -103,7 +102,6 @@ public class Puzzle {
 	}
 
 	public void savePuzzle(Context context, String location) {
-		Log.v("In", "Saving...");
 		if (Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED) == false) {
 			(Toast.makeText(context, R.string.sdcard_error, Toast.LENGTH_LONG))
@@ -139,16 +137,10 @@ public class Puzzle {
 		
 		String puzzleData = array.toString();
 		PrintWriter output = null;
-		try {
-			Log.v("JSONOUT", array.toString(2));
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
 		try {
 			output = new PrintWriter(new File(location + "puzzle_data.txt"));
 		} catch (FileNotFoundException e) {
-			Log.e("Write Data", "Puzzle failed to open a level file.", e);
 			throw new RuntimeException(e);
 		}
 
@@ -180,8 +172,6 @@ public class Puzzle {
 		this.pieces.clear();
 
 		File levelFile = new File(location + "puzzle_data.txt");
-		String r = "READ";
-		Log.v(r, "File Exists: " + levelFile.exists());
 
 		StringBuilder text = new StringBuilder();
 
@@ -196,9 +186,7 @@ public class Puzzle {
 			// You'll need to add proper error handling here
 		}
 
-		String levelText = text.toString();
-		Log.v("JSONIN", levelText);
-		JSONTokener parser = new JSONTokener(levelText);
+		JSONTokener parser = new JSONTokener(text.toString());
 
 		JSONArray items;
 		try {
@@ -211,7 +199,7 @@ public class Puzzle {
 		int width = items.optInt(1);
 
 		HashMap<Integer, PuzzleGroup> groupMap = new HashMap<Integer, PuzzleGroup>();
-		Log.v("Input", "Length of JSONArray: " + items.length());
+
 		for (int i = 2; i < items.length(); i++) {
 			JSONObject piece = items.optJSONObject(i);
 
