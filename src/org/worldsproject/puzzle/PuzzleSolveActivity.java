@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -72,7 +71,6 @@ public class PuzzleSolveActivity extends Activity {
 	
 	public void onPause() {
 		super.onPause();
-		Log.v("Order", "Pause");
 		pv.savePuzzle(path(puzzle, x.toString()));
 	}
 
@@ -81,7 +79,6 @@ public class PuzzleSolveActivity extends Activity {
 		super.onSaveInstanceState(b);
 		b.putInt("puzzle", puzzle);
 		b.putString("difficulty", x.toString());
-//		pv.savePuzzle(path(puzzle, x.toString()));
 	}
 
 	@Override
@@ -94,7 +91,6 @@ public class PuzzleSolveActivity extends Activity {
 
 	private String path(int puzzle, String difficulty) {
 		String rv = getExternalCacheDir().getAbsolutePath() + "/" + puzzle + "/" + difficulty + "/";
-		Log.v("Path", rv);
 		return rv;
 	}
 }

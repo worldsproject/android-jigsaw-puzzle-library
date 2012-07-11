@@ -17,12 +17,12 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.worldsproject.puzzle.enums.Difficulty;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 public class Puzzle {
@@ -116,7 +116,6 @@ public class Puzzle {
 			JSONObject obj = new JSONObject();
 
 			try {
-				Log.v("Coords", "(" + p.getX() + ", " + p.getY() + ")");
 				obj.put("x", p.getX());
 				obj.put("y", p.getY());
 				obj.put("g", p.getGroup().getSerial());
@@ -153,7 +152,6 @@ public class Puzzle {
 			File checkExists = new File(location + p.getSerial() + ".png");
 
 			if (checkExists.exists() == false) {
-				Log.v("Called", "Images Written");
 				(new File(location)).mkdirs();
 				checkExists.createNewFile();
 
@@ -168,6 +166,7 @@ public class Puzzle {
 		}
 	}
 
+	@SuppressLint("UseSparseArrays")
 	public int loadPuzzle(String location) {
 		this.pieces.clear();
 
