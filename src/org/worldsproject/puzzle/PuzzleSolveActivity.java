@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,10 +36,12 @@ public class PuzzleSolveActivity extends Activity {
 		pv = (PuzzleView) this.findViewById(R.id.puzzleView);
 
 		// Now we need to test if it already exists.
-		if ((new File(path(puzzle)).exists())) {
-			pv.loadPuzzle(path(puzzle));
+		File testExistance = new File(path(puzzle, x.toString()));
+		
+		if (testExistance != null && testExistance.exists()) {
+			pv.loadPuzzle(path(puzzle, x.toString()));
 		} else {
-			pv.loadPuzzle(image, x, path(puzzle));
+			pv.loadPuzzle(image, x, path(puzzle, x.toString()));
 		}
 		
 		Button zoom_out = (Button) this.findViewById(R.id.zoom_out);
@@ -66,23 +69,32 @@ public class PuzzleSolveActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.solve);
 	}
+	
+	public void onPause() {
+		super.onPause();
+		Log.v("Order", "Pause");
+		pv.savePuzzle(path(puzzle, x.toString()));
+	}
 
 	@Override
 	public void onSaveInstanceState(Bundle b) {
 		super.onSaveInstanceState(b);
-		// Log.v("PATH", getExternalCacheDir().getAbsolutePath() + "/puzzle/");
 		b.putInt("puzzle", puzzle);
-		pv.savePuzzle(path(puzzle));
+		b.putString("difficulty", x.toString());
+//		pv.savePuzzle(path(puzzle, x.toString()));
 	}
 
 	@Override
 	public void onRestoreInstanceState(Bundle b) {
 		super.onRestoreInstanceState(b);
 		puzzle = b.getInt("puzzle");
-		pv.loadPuzzle(path(puzzle));
+		x = Difficulty.getEnumFromString(b.getString("difficulty"));
+		pv.loadPuzzle(path(puzzle, x.toString()));
 	}
 
-	private String path(int puzzle) {
-		return getExternalCacheDir().getAbsolutePath() + "/puzzle/";
+	private String path(int puzzle, String difficulty) {
+		String rv = getExternalCacheDir().getAbsolutePath() + "/" + puzzle + "/" + difficulty + "/";
+		Log.v("Path", rv);
+		return rv;
 	}
 }

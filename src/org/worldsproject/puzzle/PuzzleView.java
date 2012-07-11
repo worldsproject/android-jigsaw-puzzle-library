@@ -1,7 +1,5 @@
 package org.worldsproject.puzzle;
 
-import java.util.ArrayList;
-
 import org.worldsproject.puzzle.enums.Difficulty;
 
 import android.content.Context;
@@ -39,7 +37,7 @@ public class PuzzleView extends View implements OnGestureListener,
 
 		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(image,
 				difficulty, location);
-		puzzle.savePuzzle(getContext(), location);
+		puzzle.savePuzzle(getContext(), location, true);
 	}
 
 	public void loadPuzzle(String location) {
@@ -50,7 +48,7 @@ public class PuzzleView extends View implements OnGestureListener,
 	}
 
 	public void savePuzzle(String location) {
-		puzzle.savePuzzle(this.getContext(), location);
+		puzzle.savePuzzle(this.getContext(), location, false);
 	}
 
 	@Override
@@ -128,7 +126,6 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-
 	}
 
 	@Override
@@ -177,7 +174,8 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	@Override
 	public void onShowPress(MotionEvent e) {
-
+		if (checkSurroundings(tapped))
+			this.invalidate();
 	}
 
 	@Override

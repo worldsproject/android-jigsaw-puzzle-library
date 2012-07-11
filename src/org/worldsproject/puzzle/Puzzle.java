@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Puzzle {
@@ -29,7 +30,6 @@ public class Puzzle {
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private int width;
-	private boolean initialSave = true;
 
 	public Puzzle(String location) {
 		int width = this.loadPuzzle(location);
@@ -101,7 +101,7 @@ public class Puzzle {
 		}
 	}
 
-	public void savePuzzle(Context context, String location) {
+	public void savePuzzle(Context context, String location, boolean saveImages) {
 		if (Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED) == false) {
 			(Toast.makeText(context, R.string.sdcard_error, Toast.LENGTH_LONG))
@@ -116,6 +116,7 @@ public class Puzzle {
 			JSONObject obj = new JSONObject();
 
 			try {
+				Log.v("Coords", "(" + p.getX() + ", " + p.getY() + ")");
 				obj.put("x", p.getX());
 				obj.put("y", p.getY());
 				obj.put("g", p.getGroup().getSerial());
@@ -128,12 +129,10 @@ public class Puzzle {
 
 			array.put(obj);
 
-			if (initialSave) {
+			if (saveImages) {
 				writeImages(location, p);
 			}
 		}
-		
-		initialSave = false;
 		
 		String puzzleData = array.toString();
 		PrintWriter output = null;
@@ -154,6 +153,7 @@ public class Puzzle {
 			File checkExists = new File(location + p.getSerial() + ".png");
 
 			if (checkExists.exists() == false) {
+				Log.v("Called", "Images Written");
 				(new File(location)).mkdirs();
 				checkExists.createNewFile();
 
