@@ -6,16 +6,20 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 
 public class PuzzleView extends View implements OnGestureListener,
-		OnDoubleTapListener {
+		OnDoubleTapListener, OnScaleGestureListener {
 	private Puzzle puzzle;
 	private GestureDetector gesture;
+	private ScaleGestureDetector scaleGesture;
 	private Piece tapped;
 	private boolean firstDraw = true;
 	private float scale = 1.0f;
@@ -34,6 +38,7 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	public void loadPuzzle(Bitmap image, Difficulty difficulty, String location) {
 		gesture = new GestureDetector(this.getContext(), this);
+		scaleGesture = new ScaleGestureDetector(this.getContext(), this);
 
 		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(image,
 				difficulty, location);
@@ -42,6 +47,7 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	public void loadPuzzle(String location) {
 		gesture = new GestureDetector(this.getContext(), this);
+		scaleGesture = new ScaleGestureDetector(this.getContext(), this);
 
 		puzzle = new Puzzle(location);
 		firstDraw = false;
@@ -64,7 +70,9 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		return gesture.onTouchEvent(event);
+		scaleGesture.onTouchEvent(event);
+		gesture.onTouchEvent(event);
+		return true;
 	}
 
 	@Override
@@ -186,13 +194,19 @@ public class PuzzleView extends View implements OnGestureListener,
 		return true;
 	}
 
-	public void zoomIn() {
-		scale += 0.1;
+	@Override
+	public boolean onScale(ScaleGestureDetector detector) {
+		scale *= detector.getScaleFactor();
 		this.invalidate();
+		return true;
 	}
 
-	public void zoomOut() {
-		scale -= 0.1;
-		this.invalidate();
+	@Override
+	public boolean onScaleBegin(ScaleGestureDetector detector) {
+		return true;
+	}
+
+	@Override
+	public void onScaleEnd(ScaleGestureDetector detector) {
 	}
 }

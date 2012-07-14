@@ -43,23 +43,15 @@ public class PuzzleSolveActivity extends Activity {
 			pv.loadPuzzle(image, x, path(puzzle, x.toString()));
 		}
 		
-		Button zoom_out = (Button) this.findViewById(R.id.zoom_out);
-		Button zoom_in = (Button) this.findViewById(R.id.zoom_in);
+		Button menu = (Button) this.findViewById(R.id.menu);
 
-		OnClickListener zoomIn = new OnClickListener() {
+		OnClickListener menuListener = new OnClickListener() {
 			public void onClick(View v) {
-				pv.zoomIn();
+				//Bring up menu
 			}
 		};
 
-		OnClickListener zoomOut = new OnClickListener() {
-			public void onClick(View v) {
-				pv.zoomOut();
-			}
-		};
-
-		zoom_out.setOnClickListener(zoomOut);
-		zoom_in.setOnClickListener(zoomIn);
+		menu.setOnClickListener(menuListener);
 	}
 
 	/** Called when the activity is first created. */

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, PuzzleActivity!</string>
     <string name="app_name">Puzzle</string>
-    <string name="zoom_in">Zoom In</string>
-    <string name="zoom_out">Zoom Out</string>
     <string name="image_description">Puzzle to be completed.</string>
     <string name="easy">Easy</string>
     <string name="hard">Hard</string>
     <string name="medium">Medium</string>
     <string name="sdcard_error">Your SD card seems to be unavailable and your puzzle progress may not save correctly.</string>
+    <string name="menu">Menu</string>
 
 </resources>

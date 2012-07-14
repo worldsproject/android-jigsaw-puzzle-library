@@ -10,19 +10,11 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/zoom_out"
+        android:id="@+id/menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/zoom_out" />
-
-    <Button
-        android:id="@+id/zoom_in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:text="@string/zoom_in" />
+        android:layout_centerInParent="true"
+        android:text="@string/menu" />
 
 </RelativeLayout>
