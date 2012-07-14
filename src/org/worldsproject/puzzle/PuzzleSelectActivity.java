@@ -31,6 +31,7 @@ public class PuzzleSelectActivity extends Activity
 
 		Gallery gallery = (Gallery) findViewById(R.id.gallery);
 		gallery.setAdapter(new ImageAdapter(this, this.getIntent().getIntArrayExtra("images")));
+		gallery.setSpacing(1);
 		
 		selected = (ImageView) findViewById(R.id.imageView);
 
@@ -126,7 +127,7 @@ public class PuzzleSelectActivity extends Activity
 
 			imageView.setImageResource(mImageIds[position]);
 			imageView.setLayoutParams(new Gallery.LayoutParams(150, 100));
-			imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+			imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
 			return imageView;
 		}

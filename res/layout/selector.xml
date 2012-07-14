@@ -14,10 +14,10 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/gallery"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:scaleType="center"
-        android:contentDescription="@string/image_description" />
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/image_description"
+        android:scaleType="center" />
 
     <Button
         android:id="@+id/difficulty"
