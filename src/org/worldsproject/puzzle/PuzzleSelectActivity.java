@@ -30,7 +30,7 @@ public class PuzzleSelectActivity extends Activity
 		setContentView(R.layout.selector);
 
 		Gallery gallery = (Gallery) findViewById(R.id.gallery);
-		gallery.setAdapter(new ImageAdapter(this));
+		gallery.setAdapter(new ImageAdapter(this, this.getIntent().getIntArrayExtra("images")));
 		
 		selected = (ImageView) findViewById(R.id.imageView);
 
@@ -51,11 +51,6 @@ public class PuzzleSelectActivity extends Activity
 			{
 			}
 		});
-		
-		CharSequence[] options = new CharSequence[3];
-		options[0] = getResources().getText(R.string.easy);
-		options[1] = getResources().getText(R.string.medium);
-		options[2] = getResources().getText(R.string.hard);
 		
 		intent = new Intent(this, PuzzleSolveActivity.class);
 		
@@ -102,11 +97,12 @@ public class PuzzleSelectActivity extends Activity
 	{
 		private Context mContext;
 
-		private Integer[] mImageIds = { /*Insert Own Image IDs*/ };
+		private int[] mImageIds;
 
-		public ImageAdapter(Context c)
+		public ImageAdapter(Context c, int[] ids)
 		{
 			mContext = c;
+			mImageIds = ids;
 		}
 
 		public int getCount()

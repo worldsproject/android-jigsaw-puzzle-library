@@ -11,11 +11,12 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@id/gallery"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:scaleType="center"
         android:contentDescription="@string/image_description" />
 
     <Button
