@@ -9,7 +9,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
@@ -32,17 +31,15 @@ public class PuzzleSelectActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.selector);
-
-		final Animation in = new AlphaAnimation(0, 1);
-		final Animation out = new AlphaAnimation(1, 0);
 		
-		in.setDuration(1000);
-		out.setDuration(500);
+		Animation fadeIn = new AlphaAnimation(0, 1);
+		fadeIn.setDuration(1500);
 		
-		Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_in_out);
+		fadeIn.setRepeatCount(Animation.INFINITE);
+		fadeIn.setRepeatMode(Animation.REVERSE);
+		
 		TextView ins = (TextView) findViewById(R.id.instruct);
-		ins.setAnimation(fade);
-		
+		ins.startAnimation(fadeIn);
 		Gallery gallery = (Gallery) findViewById(R.id.gallery);
 		gallery.setAdapter(new ImageAdapter(this, this.getIntent().getIntArrayExtra("images")));
 		gallery.setSpacing(1);

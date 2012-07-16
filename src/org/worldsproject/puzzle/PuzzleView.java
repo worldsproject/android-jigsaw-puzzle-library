@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
@@ -14,9 +13,12 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 
 public class PuzzleView extends View implements OnGestureListener,
-		OnDoubleTapListener, OnScaleGestureListener {
+		OnDoubleTapListener, OnScaleGestureListener, AnimationListener {
 	private Puzzle puzzle;
 	private GestureDetector gesture;
 	private ScaleGestureDetector scaleGesture;
@@ -40,17 +42,21 @@ public class PuzzleView extends View implements OnGestureListener,
 		gesture = new GestureDetector(this.getContext(), this);
 		scaleGesture = new ScaleGestureDetector(this.getContext(), this);
 
-		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(image,
-				difficulty, location);
+		puzzle = new PuzzleGenerator(this.getContext()).generatePuzzle(
+				this.getContext(), image, difficulty, location);
 		puzzle.savePuzzle(getContext(), location, true);
+		
+		Piece.resetSerial();
 	}
 
 	public void loadPuzzle(String location) {
 		gesture = new GestureDetector(this.getContext(), this);
 		scaleGesture = new ScaleGestureDetector(this.getContext(), this);
 
-		puzzle = new Puzzle(location);
+		puzzle = new Puzzle(this.getContext(), location);
 		firstDraw = false;
+		
+		Piece.resetSerial();
 	}
 
 	public void savePuzzle(String location) {
@@ -99,7 +105,9 @@ public class PuzzleView extends View implements OnGestureListener,
 		Piece possibleNewTapped = null;
 		boolean shouldPan = true;
 
-		for (Piece p : this.puzzle.getPieces()) {
+		for (int i = this.puzzle.getPieces().size()-1; i >= 0; i--) {
+			Piece p = this.puzzle.getPieces().get(i);
+			
 			if (p.inMe((int) (e1.getX() / scale), (int) (e1.getY() / scale))) {
 				if (p == tapped) {
 					possibleNewTapped = null;
@@ -208,5 +216,37 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	@Override
 	public void onScaleEnd(ScaleGestureDetector detector) {
+	}
+
+	public void shuffle() {
+		puzzle.shuffle(this.getWidth(), this.getHeight());
+		this.invalidate();
+	}
+
+	public void solve() {
+		Animation a = new AlphaAnimation(1, 0);
+		a.setDuration(2000);
+		a.setAnimationListener(this);
+		this.startAnimation(a);
+		
+	}
+
+	@Override
+	public void onAnimationEnd(Animation animation) {
+		this.puzzle.getPieces().get(0).getGroup().translate(5, 5);
+		this.puzzle.solve();
+		this.invalidate();
+	}
+
+	@Override
+	public void onAnimationRepeat(Animation animation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAnimationStart(Animation animation) {
+		// TODO Auto-generated method stub
+		
 	}
 }
