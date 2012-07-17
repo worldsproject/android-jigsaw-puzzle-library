@@ -233,8 +233,9 @@ public class PuzzleView extends View implements OnGestureListener,
 
 	@Override
 	public void onAnimationEnd(Animation animation) {
-		this.puzzle.getPieces().get(0).getGroup().translate(5, 5);
 		this.puzzle.solve();
+		Piece zero = this.puzzle.getPieces().get(0);
+		zero.getGroup().translate(zero.getX()+5, zero.getY()+5);
 		this.invalidate();
 	}
 
