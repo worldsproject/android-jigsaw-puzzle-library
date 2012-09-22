@@ -22,7 +22,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.os.Environment;
 import android.widget.Toast;
 
 public class Puzzle {
@@ -31,15 +30,15 @@ public class Puzzle {
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private int width;
 
-	public Puzzle(String location) {
-		int width = this.loadPuzzle(location);
+	public Puzzle(Context c, String location) {
+		int width = this.loadPuzzle(c, location);
 		this.width = width;
 		this.findNeighbors(width);
 	}
 
-	public Puzzle(Bitmap[] images, String location, int width, Difficulty d) {
+	public Puzzle(Context c, Bitmap[] images, String location, int width, Difficulty d) {
 		for (int i = 0; i < images.length; i++) {
-			pieces.add(new Piece(images[i], d.getOffset()));
+			pieces.add(new Piece(c, images[i], d.getOffset()));
 		}
 		this.width = width;
 		findNeighbors(width);
@@ -74,6 +73,7 @@ public class Puzzle {
 		for (Piece p : this.pieces) {
 			p.setX(RAN.nextInt(maxX));
 			p.setY(RAN.nextInt(maxY));
+			p.setGroup(new PuzzleGroup(p));
 		}
 	}
 
@@ -95,17 +95,14 @@ public class Puzzle {
 	}
 
 	public void solve() {
-		for (Piece p : this.pieces) {
+		for(Piece p : this.pieces) {
 			p.snap(p.getLeft());
 			p.snap(p.getTop());
 		}
 	}
 
 	public void savePuzzle(Context context, String location, boolean saveImages) {
-		if (Environment.getExternalStorageState().equals(
-				Environment.MEDIA_MOUNTED) == false) {
-			(Toast.makeText(context, R.string.sdcard_error, Toast.LENGTH_LONG))
-					.show();
+		if (location == null) {
 			return;
 		}
 		JSONArray array = new JSONArray();
@@ -116,8 +113,8 @@ public class Puzzle {
 			JSONObject obj = new JSONObject();
 
 			try {
-				obj.put("x", p.getX());
-				obj.put("y", p.getY());
+				obj.put("x", (int)p.getX());
+				obj.put("y", (int)p.getY());
 				obj.put("g", p.getGroup().getSerial());
 				obj.put("s", p.getSerial());
 			} catch (JSONException e) {
@@ -138,13 +135,11 @@ public class Puzzle {
 		
 		try {
 			output = new PrintWriter(new File(location + "puzzle_data.txt"));
+			output.write(puzzleData);
+			output.close();
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			Toast.makeText(context, context.getText(R.string.sdcard_error), Toast.LENGTH_LONG).show();
 		}
-
-		output.write(puzzleData);
-
-		output.close();
 	}
 
 	private void writeImages(String location, Piece p) {
@@ -167,7 +162,7 @@ public class Puzzle {
 	}
 
 	@SuppressLint("UseSparseArrays")
-	public int loadPuzzle(String location) {
+	public int loadPuzzle(Context c, String location) {
 		this.pieces.clear();
 
 		File levelFile = new File(location + "puzzle_data.txt");
@@ -214,15 +209,15 @@ public class Puzzle {
 
 			Bitmap pieceImage = BitmapFactory.decodeFile(location + serial
 					+ ".png");
-
-			Piece p = new Piece(pieceImage, offset);
+			
+			Piece p = new Piece(c, pieceImage, offset);
 			p.setX(x);
 			p.setY(y);
 
 			PuzzleGroup group = groupMap.get(groupID);
 
 			if (group == null) {
-				group = new PuzzleGroup();
+				group = new PuzzleGroup(p);
 				groupMap.put(groupID, group);
 			}
 

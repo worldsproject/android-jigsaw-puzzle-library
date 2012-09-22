@@ -5,7 +5,12 @@
     <string name="easy">Easy</string>
     <string name="hard">Hard</string>
     <string name="medium">Medium</string>
-    <string name="sdcard_error">Your SD card seems to be unavailable and your puzzle progress may not save correctly.</string>
+    <string name="sdcard_error">Your SD card seems to be unavailable and your puzzle progress may not saved correctly.</string>
     <string name="menu">Menu</string>
+    <string name="help">Touch above to begin. Change difficulty below.</string>
+    <string name="show_cover">Show Image</string>
+    <string name="solve">Solve Puzzle</string>
+    <string name="reset">Reset Puzzle</string>
+    <string name="preview_description">What the complete puzzle should look like.</string>
 
 </resources>

@@ -1,9 +1,13 @@
 package org.worldsproject.puzzle;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.widget.ImageView;
 
+@SuppressLint("NewApi")
 public class Piece {
 	private static int idSource = 0;
 	private final int serial = ++idSource;
@@ -19,6 +23,8 @@ public class Piece {
 
 	private Bitmap original;
 	private Bitmap display;
+	
+	private ImageView image;
 
 	private int offset = 0;
 	/*
@@ -27,12 +33,14 @@ public class Piece {
 	 */
 	private int orientation = 0;
 
-	public Piece(Bitmap image, int offset) {
+	public Piece(Context c, Bitmap image, int offset) {
 		this.original = image;
 		this.display = image;
 		this.offset = offset;
-		this.group = new PuzzleGroup();
+		this.group = new PuzzleGroup(this);
 		this.group.addPiece(this);
+		this.image = new ImageView(c);
+		this.image.setImageBitmap(display);
 	}
 
 	public void turn() {
@@ -49,30 +57,6 @@ public class Piece {
 
 	public void draw(Canvas c) {
 		c.drawBitmap(display, x, y, null);
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public int getHeight() {
-		return this.display.getHeight();
-	}
-
-	public int getWidth() {
-		return this.display.getWidth();
 	}
 
 	public Piece getTop() {
@@ -105,6 +89,30 @@ public class Piece {
 
 	public void setLeft(Piece left) {
 		this.left = left;
+	}
+
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public void setX(int nx) {
+		this.x = nx;
+	}
+	
+	public void setY(int ny) {
+		this.y = ny;
+	}
+	
+	public int getHeight() {
+		 return this.display.getHeight();
+	}
+	
+	public int getWidth() {
+		return this.display.getWidth();
 	}
 
 	public int getOrientation() {
@@ -156,7 +164,7 @@ public class Piece {
 		this.group = g;
 	}
 
-	public boolean inMe(int x, int y) {
+	public boolean inMe(float x, float y) {
 		if (x >= this.x && x <= (this.x + this.display.getWidth())
 				&& y >= this.y && y <= (this.y + this.display.getHeight())) {
 			return true;
@@ -165,8 +173,9 @@ public class Piece {
 		return false;
 	}
 
+	@SuppressLint("NewApi")
 	public void snap(Piece p) {
-		if (group.sameGroup(this, p) || p == null) {
+		if (p == null || group.sameGroup(this, p)) {
 			return;
 		}
 
@@ -207,5 +216,13 @@ public class Piece {
 
 	public int getOffset() {
 		return offset;
+	}
+
+	public String toString() {
+		return "(" + this.getX() + ", " + this.getY() + ")";
+	}
+	
+	public static void resetSerial() {
+		idSource = 0;
 	}
 }
