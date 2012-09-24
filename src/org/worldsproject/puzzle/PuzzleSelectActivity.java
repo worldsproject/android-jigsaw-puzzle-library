@@ -25,11 +25,11 @@ public class PuzzleSelectActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		Intent i;
+
 		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			i = new Intent(this, PuzzleSelectActivity_Pre3.class);
 		} else {
 			i = new Intent(this, PuzzleSelectActivity_Post3.class);
-			
 		}
 		
 		i.putExtra("images", this.getIntent().getIntArrayExtra("images"));
