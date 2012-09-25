@@ -7,7 +7,7 @@
     <org.worldsproject.puzzle.carousel.MyCarouselView
         android:id="@+id/carousel"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
          />
 
