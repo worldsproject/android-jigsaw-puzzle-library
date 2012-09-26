@@ -4,20 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Gallery
-        android:id="@+id/gallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <ImageView
-        android:id="@+id/imageView"
+    <org.worldsproject.puzzle.coverflow.CoverFlow
+        xmlns:coverflow="http://schemas.android.com/apk/res-auto/org.worldsproject.puzzle"
+        android:id="@+id/coverflow"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/gallery"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/image_description"
-        android:scaleType="center" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        coverflow:imageHeight="150dip"
+        coverflow:imageReflectionRatio="0.2"
+        coverflow:imageWidth="100dip"
+        coverflow:reflectionGap="2dip"
+        coverflow:withReflection="true" />
 
     <Button
         android:id="@+id/difficulty"
@@ -26,15 +23,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:text="@string/easy" />
-
-    <TextView
-        android:id="@+id/instruct"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/difficulty"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:background="#000000"
-        android:text="@string/help" />
 
 </RelativeLayout>
