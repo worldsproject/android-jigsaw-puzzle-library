@@ -4,12 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <org.worldsproject.puzzle.carousel.MyCarouselView
-        android:id="@+id/carousel"
-        android:layout_width="match_parent"
+    <org.worldsproject.puzzle.coverflow.CoverFlow
+        xmlns:coverflow="http://schemas.android.com/apk/res-auto/org.worldsproject.puzzle"
+        android:id="@+id/coverflow"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-         />
+        android:layout_marginTop="5dip"
+        coverflow:imageHeight="150dip"
+        coverflow:imageReflectionRatio="0.2"
+        coverflow:imageWidth="100dip"
+        coverflow:reflectionGap="2dip"
+        coverflow:withReflection="true" />
 
     <Button
         android:id="@+id/difficulty"
