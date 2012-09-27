@@ -10,9 +10,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dip"
-        coverflow:imageHeight="150dip"
+        coverflow:imageHeight="250dip"
         coverflow:imageReflectionRatio="0.2"
-        coverflow:imageWidth="100dip"
+        coverflow:imageWidth="250dip"
         coverflow:reflectionGap="2dip"
         coverflow:withReflection="true" />
 
