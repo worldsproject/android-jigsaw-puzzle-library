@@ -32,6 +32,7 @@ public class Puzzle {
     
     //Keeping track of puzzle progress
     private int max_groups;
+    private int total_groups;
 
 	public Puzzle(Context c, String location) {
 		int[] width_maxGroups = this.loadPuzzle(c, location);
@@ -108,6 +109,14 @@ public class Puzzle {
 			p.snap(p.getTop());
 		}
 	}
+    
+    public void decreaseGroups() {
+        total_groups =- 1;
+    }
+    
+    public double percent_complete() {
+        return (double)(max_groups - total_groups)/(double)total_groups;
+    }
 
 	public void savePuzzle(Context context, String location, boolean saveImages) {
 		if (location == null) {
