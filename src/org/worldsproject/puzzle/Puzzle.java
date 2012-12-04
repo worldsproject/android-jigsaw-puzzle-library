@@ -29,10 +29,16 @@ public class Puzzle {
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private int width;
+    
+    //Keeping track of puzzle progress
+    private int max_groups;
 
 	public Puzzle(Context c, String location) {
-		int width = this.loadPuzzle(c, location);
-		this.width = width;
+		int[] width_maxGroups = this.loadPuzzle(c, location);
+        
+		this.width = width_maxGroups[0];
+        this.max_groups = width_maxGroups[1];
+        
 		this.findNeighbors(width);
 	}
 
@@ -40,6 +46,8 @@ public class Puzzle {
 		for (int i = 0; i < images.length; i++) {
 			pieces.add(new Piece(c, images[i], d.getOffset()));
 		}
+        
+        this.max_groups = images.length;
 		this.width = width;
 		findNeighbors(width);
 	}
@@ -106,6 +114,7 @@ public class Puzzle {
 			return;
 		}
 		JSONArray array = new JSONArray();
+        array.put(this.max_groups);
 		array.put(this.pieces.get(0).getOffset());
 		array.put(this.width);
 
@@ -189,12 +198,13 @@ public class Puzzle {
 			throw new RuntimeException(e);
 		}
 
-		int offset = items.optInt(0);
-		int width = items.optInt(1);
+        int max_groups = items.optInt(0);
+		int offset = items.optInt(1);
+		int width = items.optInt(2);
 
 		HashMap<Integer, PuzzleGroup> groupMap = new HashMap<Integer, PuzzleGroup>();
 
-		for (int i = 2; i < items.length(); i++) {
+		for (int i = 3; i < items.length(); i++) {
 			JSONObject piece = items.optJSONObject(i);
 
 			int x;
@@ -224,7 +234,10 @@ public class Puzzle {
 			p.setGroup(group);
 			this.pieces.add(p);
 		}
-
-		return width;
+        int[] rv = new int[2];
+        rv[0] = width;
+        rv[1] = max_groups;
+        
+		return rv;
 	}
 }
