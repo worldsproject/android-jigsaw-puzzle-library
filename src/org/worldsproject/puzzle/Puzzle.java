@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -29,14 +30,9 @@ public class Puzzle {
 
 	private final ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private final int width;
-    
-    //Keeping track of puzzle progress
-    private final int max_groups;
 
 	public Puzzle(Context c, String location) {
 		this.width = this.loadPuzzle(c, location);
-        
-		this.max_groups = pieces.size();
         
 		this.findNeighbors(width);
 	}
@@ -45,8 +41,7 @@ public class Puzzle {
 		for (int i = 0; i < images.length; i++) {
 			pieces.add(new Piece(c, images[i], d.getOffset()));
 		}
-        
-        this.max_groups = images.length;
+       
 		this.width = width;
 		findNeighbors(width);
 	}
@@ -109,12 +104,21 @@ public class Puzzle {
 	}
     
     public double percent_complete() {
-		int total_groups = countGroups();
-        return (double)(max_groups - total_groups)/(double)total_groups;
+		int total_groups = countGroups() - 1;
+		int max_groups = pieces.size() - 1;
+        double rv = (double)(max_groups - total_groups)/(double)max_groups;
+
+		return rv;
     }
 
 	private int countGroups() {
-		return 0;
+		HashSet<Integer> uniques = new HashSet<Integer>();
+
+		for (Piece p : this.pieces) {
+			uniques.add(p.getGroup().getSerial());
+		}
+
+		return uniques.size();
 	}
 
 	public void savePuzzle(Context context, String location, boolean saveImages) {
@@ -122,7 +126,6 @@ public class Puzzle {
 			return;
 		}
 		JSONArray array = new JSONArray();
-        array.put(this.max_groups);
 		array.put(this.pieces.get(0).getOffset());
 		array.put(this.width);
 
