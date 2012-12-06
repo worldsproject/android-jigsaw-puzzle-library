@@ -27,11 +27,11 @@ import android.widget.Toast;
 public class Puzzle {
 	private static final Random RAN = new Random();
 
-	private ArrayList<Piece> pieces = new ArrayList<Piece>();
-	private int width;
+	private final ArrayList<Piece> pieces = new ArrayList<Piece>();
+	private final int width;
     
     //Keeping track of puzzle progress
-    private int max_groups;
+    private final int max_groups;
     private int total_groups;
 
 	public Puzzle(Context c, String location) {
@@ -131,8 +131,8 @@ public class Puzzle {
 			JSONObject obj = new JSONObject();
 
 			try {
-				obj.put("x", (int)p.getX());
-				obj.put("y", (int)p.getY());
+				obj.put("x", p.getX());
+				obj.put("y", p.getY());
 				obj.put("g", p.getGroup().getSerial());
 				obj.put("s", p.getSerial());
 			} catch (JSONException e) {
@@ -180,7 +180,7 @@ public class Puzzle {
 	}
 
 	@SuppressLint("UseSparseArrays")
-	public int loadPuzzle(Context c, String location) {
+	public int[] loadPuzzle(Context c, String location) {
 		this.pieces.clear();
 
 		File levelFile = new File(location + "puzzle_data.txt");
