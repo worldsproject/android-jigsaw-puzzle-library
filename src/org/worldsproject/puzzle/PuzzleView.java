@@ -167,25 +167,21 @@ public class PuzzleView extends View implements OnGestureListener,
 
 		if (tapped.inLeft()) {
 			tapped.snap(tapped.getLeft());
-            this.puzzle.decreaseGroups();
 			rv = true;
 		}
 
 		if (tapped.inRight()) {
 			tapped.snap(tapped.getRight());
-            this.puzzle.decreaseGroups();
 			rv = true;
 		}
 
 		if (tapped.inBottom()) {
 			tapped.snap(tapped.getBottom());
-            this.puzzle.decreaseGroups();
 			rv = true;
 		}
 
 		if (tapped.inTop()) {
 			tapped.snap(tapped.getTop());
-            this.puzzle.decreaseGroups();
 			rv = true;
 		}
 

@@ -32,13 +32,11 @@ public class Puzzle {
     
     //Keeping track of puzzle progress
     private final int max_groups;
-    private int total_groups;
 
 	public Puzzle(Context c, String location) {
-		int[] width_maxGroups = this.loadPuzzle(c, location);
+		this.width = this.loadPuzzle(c, location);
         
-		this.width = width_maxGroups[0];
-        this.max_groups = width_maxGroups[1];
+		this.max_groups = pieces.size();
         
 		this.findNeighbors(width);
 	}
@@ -110,13 +108,14 @@ public class Puzzle {
 		}
 	}
     
-    public void decreaseGroups() {
-        total_groups =- 1;
-    }
-    
     public double percent_complete() {
+		int total_groups = countGroups();
         return (double)(max_groups - total_groups)/(double)total_groups;
     }
+
+	private int countGroups() {
+		return 0;
+	}
 
 	public void savePuzzle(Context context, String location, boolean saveImages) {
 		if (location == null) {
@@ -180,7 +179,7 @@ public class Puzzle {
 	}
 
 	@SuppressLint("UseSparseArrays")
-	public int[] loadPuzzle(Context c, String location) {
+	public int loadPuzzle(Context c, String location) {
 		this.pieces.clear();
 
 		File levelFile = new File(location + "puzzle_data.txt");
@@ -214,13 +213,12 @@ public class Puzzle {
 			throw new RuntimeException(e);
 		}
 
-        int max_groups = items.optInt(0);
-		int offset = items.optInt(1);
-		int width = items.optInt(2);
+		int offset = items.optInt(0);
+		int width = items.optInt(1);
 
 		HashMap<Integer, PuzzleGroup> groupMap = new HashMap<Integer, PuzzleGroup>();
 
-		for (int i = 3; i < items.length(); i++) {
+		for (int i = 2; i < items.length(); i++) {
 			JSONObject piece = items.optJSONObject(i);
 
 			int x;
@@ -250,10 +248,7 @@ public class Puzzle {
 			p.setGroup(group);
 			this.pieces.add(p);
 		}
-        int[] rv = new int[2];
-        rv[0] = width;
-        rv[1] = max_groups;
         
-		return rv;
+		return width;
 	}
 }
