@@ -187,15 +187,22 @@ public class Puzzle {
 
 		StringBuilder text = new StringBuilder();
 
+		BufferedReader br = null;
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(levelFile));
+			br = new BufferedReader(new FileReader(levelFile));
 			String line;
 
 			while ((line = br.readLine()) != null) {
 				text.append(line);
 			}
 		} catch (IOException e) {
-			// You'll need to add proper error handling here
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
 		}
 
 		JSONTokener parser = new JSONTokener(text.toString());
