@@ -2,7 +2,8 @@ An Android library that facilites the creation of Jigsaw puzzles.
 
 All code is GPLv3
 
-== How do I create puzzles with the puzzle library
+## How do I create puzzles with the puzzle library
+
 So, you have the puzzle library as an eclipse project, and it's built all properly, with no errors.
 
 1. Mark the project as a library
